@@ -14,7 +14,7 @@ const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : use
 // Current values act as fallback defaults so the site never renders empty
 // even if the API is unreachable.
 export const DEFAULT_SETTINGS = {
-  logo: 'https://samudera-cargo-server.vercel.app/uploads/images/logo.png',
+  logo: 'http://localhost:8000/uploads/images/logo.png',
   favicon: '',
   companyName: 'Samudera Traffic Co., Ltd.',
   phone: '+66977830395',

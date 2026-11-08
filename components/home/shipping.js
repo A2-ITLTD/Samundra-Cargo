@@ -32,7 +32,7 @@ export default function ShippingProcess() {
 
       {/* Right side image */}
       <img
-        src="https://samudera-cargo-server.vercel.app/uploads/images/shipping.png"
+        src="http://localhost:8000/uploads/images/shipping.png"
         className="absolute top-0 right-0 w-[48%] hidden lg:block"
         alt="Shipping"
       />
