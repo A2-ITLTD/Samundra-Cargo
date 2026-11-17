@@ -2,7 +2,6 @@ import CreateBooking from "@/components/booking/createBooking";
 
 import React from "react";
 
-// 🔹 SEO metadata for Create Booking
 export const metadata = {
   title: "Create Booking | Samudera Traffic Co., Ltd. Group",
   description:
