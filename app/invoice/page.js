@@ -19,13 +19,13 @@ export const metadata = {
     "Logistics Payments",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/invoices",
+    canonical: "http://localhost:3000/invoices",
   },
   openGraph: {
     title: "My Invoices | Samudera Traffic Co., Ltd. Group",
     description:
       "View and manage your shipping invoices with Samudera Traffic Co., Ltd. Group. Track invoice status, download PDF copies, view payment history, and manage your logistics billing online.",
-    url: "https://samuderathai.com/invoices",
+    url: "http://localhost:3000/invoices",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "My Invoices",
             description:
               "View and manage your shipping invoices with Samudera Traffic Co., Ltd. Group. Track invoice status, download PDF copies, view payment history, and manage your logistics billing online.",
-            url: "https://samuderathai.com/invoices",
+            url: "http://localhost:3000/invoices",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "ItemList",
@@ -93,19 +93,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: "https://samuderathai.com/customer/dashboard",
+                item: "http://localhost:3000/customer/dashboard",
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Invoices",
-                item: "https://samuderathai.com/invoices",
+                item: "http://localhost:3000/invoices",
               },
             ],
           }),
@@ -120,8 +120,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com",
-            logo: "https://samuderathai.com/logo.png",
+            url: "http://localhost:3000",
+            logo: "http://localhost:3000/logo.png",
             description: "Leading logistics and supply chain solutions provider",
             paymentAccepted: ["Credit Card", "Bank Transfer", "Wire Transfer"],
             priceRange: "$$",

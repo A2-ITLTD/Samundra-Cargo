@@ -19,13 +19,13 @@ export const metadata = {
     "Cross Border Shipping",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/projects",
+    canonical: "http://localhost:3000/projects",
   },
   openGraph: {
     title: "Our Projects | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore our latest projects in logistics, supply chain management, customs clearance, freight solutions, and smart warehousing. Discover how Samudera Traffic Co., Ltd. Group delivers innovation across industries.",
-    url: "https://samuderathai.com/projects",
+    url: "http://localhost:3000/projects",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -68,8 +68,8 @@ export default function Page() {
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
           }),
         }}

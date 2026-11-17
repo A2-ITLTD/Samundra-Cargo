@@ -19,13 +19,13 @@ export const metadata = {
     "Transportation Solutions",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/contact",
+    canonical: "http://localhost:3000/contact",
   },
   openGraph: {
     title: "Contact Us | Samudera Traffic Co., Ltd. Group",
     description:
       "Get in touch with Samudera Traffic Co., Ltd. Group for all your shipping and logistics needs. Contact our support team for inquiries about sea freight, air freight, trucking, and multimodal shipping solutions.",
-    url: "https://samuderathai.com/contact",
+    url: "http://localhost:3000/contact",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Contact Us",
             description:
               "Get in touch with Samudera Traffic Co., Ltd. Group for all your shipping and logistics needs. Contact our support team for inquiries about sea freight, air freight, trucking, and multimodal shipping solutions.",
-            url: "https://samuderathai.com/contact",
+            url: "http://localhost:3000/contact",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "Organization",
@@ -133,13 +133,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Contact Us",
-                item: "https://samuderathai.com/contact",
+                item: "http://localhost:3000/contact",
               },
             ],
           }),

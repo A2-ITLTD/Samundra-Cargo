@@ -20,13 +20,13 @@ export const metadata = {
     "Freight Forwarding",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/service",
+    canonical: "http://localhost:3000/service",
   },
   openGraph: {
     title: "Our Services | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore our comprehensive logistics services at Samudera Traffic Co., Ltd. Group. We offer sea freight, air freight, road freight, warehousing, customs clearance, and supply chain solutions for businesses worldwide.",
-    url: "https://samuderathai.com/service",
+    url: "http://localhost:3000/service",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +69,12 @@ export default function Page() {
             name: "Our Services",
             description:
               "Explore our comprehensive logistics services at Samudera Traffic Co., Ltd. Group. We offer sea freight, air freight, road freight, warehousing, customs clearance, and supply chain solutions.",
-            url: "https://samuderathai.com/service",
+            url: "http://localhost:3000/service",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "ItemList",
@@ -134,13 +134,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Services",
-                item: "https://samuderathai.com/service",
+                item: "http://localhost:3000/service",
               },
             ],
           }),
