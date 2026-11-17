@@ -139,7 +139,7 @@ export default function Page() {
               name: "Track Shipment",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: siteUrl("/tracking-number/{tracking_number}"),
+                urlTemplate: siteUrl("/tracking-number?tracking={tracking_number}&type=tracking_number"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },

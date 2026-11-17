@@ -180,9 +180,9 @@ const Navbar = () => {
             
             {/* Logo */}
             <div className="flex items-center space-x-2 flex-shrink-0">
-              <a href="/">
+              <Link href="/">
                 <img src={site.logo} alt={site.companyName} className="h-12 w-auto" />
-              </a>
+              </Link>
             </div>
 
             {/* Desktop Navigation */}

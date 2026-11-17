@@ -158,7 +158,7 @@ const ServicesSection = () => {
         <div className="text-center mb-12">
           <p className="text-red-600 font-semibold text-sm mb-2">Safe & Reliable Cargo Solutions!</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 pt-serif-bold">
-            Managing Logistics For World's
+            Managing Logistics For World&apos;s
           </h2>
           <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 pt-serif-bold">
             Multinational Companies.

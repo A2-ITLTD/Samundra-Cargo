@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { HiChevronRight } from 'react-icons/hi'
 import { uploadsImg } from '@/utils/confiq'
 
@@ -20,12 +21,12 @@ function industriesDeatils() {
           >
             <ol className="flex items-center space-x-2">
               <li>
-                <a
+                <Link
                   href="/"
                   className="hover:text-primary transition-colors duration-200"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
                 <HiChevronRight

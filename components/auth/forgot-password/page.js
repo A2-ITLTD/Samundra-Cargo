@@ -457,7 +457,7 @@ export default function ForgotPasswordPage() {
                 <span className="text-[#E67E22] ml-1 ">Password</span>
               </h1>
               <p className="mt-2 text-gray-300 text-lg max-w-md">
-                Don't worry! It happens to the best of us. We'll help you get back into your account.
+                Don&apos;t worry! It happens to the best of us. We&apos;ll help you get back into your account.
               </p>
             </div>
 
@@ -506,7 +506,7 @@ export default function ForgotPasswordPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-gray-200">We'll send a 6-digit verification code</span>
+                    <span className="text-gray-200">We&apos;ll send a 6-digit verification code</span>
                   </div>
                 </>
               )}

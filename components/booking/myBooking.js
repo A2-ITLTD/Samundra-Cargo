@@ -477,13 +477,7 @@ const TimelineModal = ({ isOpen, onClose, bookingId }) => {
   const [timeline, setTimeline] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchTimeline();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchTimeline = async () => {
+  const fetchTimeline = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingTimeline(bookingId);
@@ -497,7 +491,11 @@ const TimelineModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchTimeline();
+  }, [isOpen, bookingId, fetchTimeline]);
 
   if (!isOpen) return null;
 
@@ -543,13 +541,7 @@ const InvoiceModal = ({ isOpen, onClose, bookingId }) => {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchInvoice();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingInvoice(bookingId);
@@ -563,7 +555,11 @@ const InvoiceModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchInvoice();
+  }, [isOpen, bookingId, fetchInvoice]);
 
   const handleDownload = async (documentId) => {
     try {
@@ -644,13 +640,7 @@ const QuoteDetailsModal = ({ isOpen, onClose, bookingId }) => {
   const [quote, setQuote] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchQuote();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchQuote = async () => {
+  const fetchQuote = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingQuote(bookingId);
@@ -664,7 +654,11 @@ const QuoteDetailsModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchQuote();
+  }, [isOpen, bookingId, fetchQuote]);
 
   if (!isOpen) return null;
 
@@ -1242,7 +1236,7 @@ const BookingDetailsModal = ({ isOpen, onClose, booking, onAction }) => {
                           Valid for {daysRemaining} more day{daysRemaining !== 1 ? 's' : ''}
                         </span>
                       ) : (
-                        <span className="text-xs text-red-600">Quote expired or till didn't given a quote yet</span>
+                        <span className="text-xs text-red-600">Quote expired or till didn&apos;t given a quote yet</span>
                       )}
                     </div>
                   </div>

@@ -79,43 +79,43 @@ const STATUS_CONFIG = {
     label: 'Picked Up',
     color: 'bg-blue-50 text-blue-700 border-blue-200',
     icon: Truck,
-    progress: 15
+    progress: 45
   },
   inspected: {
     label: 'Inspected',
     color: 'bg-green-50 text-green-700 border-green-200',
     icon: CheckCircle,
-    progress: 22
+    progress: 25
   },
   consolidating: {
     label: 'Consolidating',
     color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
     icon: Layers,
-    progress: 25
+    progress: 30
   },
   consolidated: {
     label: 'Consolidated',
     color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
     icon: Layers,
-    progress: 30
+    progress: 35
   },
   ready_for_dispatch: {
     label: 'Ready for Dispatch',
     color: 'bg-purple-50 text-purple-700 border-purple-200',
     icon: CheckCircle,
-    progress: 35
+    progress: 40
   },
   loaded_in_container: {
     label: 'Loaded in Container',
     color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
     icon: Package,
-    progress: 40
+    progress: 50
   },
   dispatched: {
     label: 'Dispatched',
     color: 'bg-red-100 text-red-700 border-red-200',
     icon: Send,
-    progress: 45
+    progress: 55
   },
   departed_port_of_origin: {
     label: 'Departed Origin Port',
@@ -190,6 +190,20 @@ const STATUS_CONFIG = {
     progress: 0
   },
 };
+
+const SHIPMENT_JOURNEY_STAGES = [
+  { id: 'confirmed', label: 'Booking confirmed', statuses: ['booking_requested', 'price_quoted', 'booking_confirmed', 'pending'], icon: Package },
+  { id: 'warehouse', label: 'Received at warehouse', statuses: ['received_at_warehouse'], icon: MapPin },
+  { id: 'inspection', label: 'Inspection complete', statuses: ['inspected'], icon: CheckCircle },
+  { id: 'consolidation', label: 'Consolidated', statuses: ['consolidating', 'consolidated'], icon: Layers },
+  { id: 'dispatch-ready', label: 'Prepared for dispatch', statuses: ['ready_for_dispatch', 'picked_up_from_warehouse', 'loaded_in_container', 'loaded_into_container', 'container_sealed'], icon: Package },
+  { id: 'departed', label: 'Departed origin', statuses: ['departed_port_of_origin', 'dispatched', 'departed'], icon: Ship },
+  { id: 'in-transit', label: 'In transit', statuses: ['in_transit', 'in_transit_sea_freight', 'in_transit_air_freight'], icon: Truck },
+  { id: 'arrived', label: 'Arrived at destination', statuses: ['arrived', 'arrived_at_destination_port'], icon: Flag },
+  { id: 'customs', label: 'Customs and unloading', statuses: ['under_customs_clearance', 'under_customs_cleared', 'customs_clearance', 'customs_cleared', 'unloaded_from_vessel'], icon: Shield },
+  { id: 'delivery', label: 'Out for delivery', statuses: ['out_for_delivery'], icon: Navigation },
+  { id: 'delivered', label: 'Delivered', statuses: ['delivered', 'completed'], icon: CheckCircleSolid }
+];
 
 // ==================== SHIPMENT MODE CONFIG ====================
 const SHIPMENT_MODE_CONFIG = {
@@ -1223,6 +1237,15 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
   const progress = trackingData?.progress || getShipmentProgress(status);
   const currentStatus = trackingData?.status || status;
   const currentLocation = trackingData?.currentLocation || 'In Transit';
+  const journeyEvents = [...(trackingData?.timeline?.length ? trackingData.timeline : timeline)]
+    .sort((a, b) => new Date(a.timestamp || a.date || a.formattedDate || 0) - new Date(b.timestamp || b.date || b.formattedDate || 0));
+  const getJourneyStageIndex = (eventStatus) => SHIPMENT_JOURNEY_STAGES.findIndex(stage => stage.statuses.includes(String(eventStatus || '').toLowerCase()));
+  const currentJourneyIndex = getJourneyStageIndex(currentStatus);
+  const recordedJourneyIndexes = journeyEvents
+    .map(event => getJourneyStageIndex(event.status))
+    .filter(index => index >= 0);
+  const activeJourneyIndex = Math.max(currentJourneyIndex, ...recordedJourneyIndexes, 0);
+  const isDelivered = ['delivered', 'completed'].includes(String(currentStatus || '').toLowerCase());
 
   const tabs = [
     { id: 'details', label: 'Details', icon: Package },
@@ -1245,15 +1268,81 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Current Status</span>
-            <span className="text-xs text-gray-500">Last updated: {trackingData?.lastUpdate ? formatShipmentDate(trackingData.lastUpdate, 'short') : formatShipmentDate(shipment.updatedAt, 'short')}</span>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Current status</p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <StatusBadge status={currentStatus} size="lg" />
+                <span className="inline-flex items-center text-sm text-slate-600">
+                  <MapPin className="mr-1.5 h-4 w-4 text-slate-400" />{currentLocation}
+                </span>
+              </div>
+            </div>
+            <span className="text-xs text-slate-500">
+              Last updated {trackingData?.lastUpdate ? formatShipmentDate(trackingData.lastUpdate, 'short') : formatShipmentDate(updatedAt || shipment.updatedAt, 'short')}
+            </span>
           </div>
-          <div className="flex items-center space-x-2 mb-3">
-            <MapPin className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-600">{currentLocation}</span>
+
+          <div className="mt-5 border-t border-slate-200 pt-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <h5 className="text-sm font-semibold text-slate-900">Shipment journey</h5>
+                <p className="mt-0.5 text-xs text-slate-500">Progress updates as each stage is recorded</p>
+              </div>
+              <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
+                {isDelivered ? 'Complete' : `${Math.max(0, Math.round(progress))}%`}
+              </span>
+            </div>
+
+            <ol className="max-h-[340px] space-y-0 overflow-y-auto pr-1">
+              {SHIPMENT_JOURNEY_STAGES.map((stage, index) => {
+                const stageEvents = journeyEvents.filter(event => stage.statuses.includes(String(event.status || '').toLowerCase()));
+                const latestStageEvent = stageEvents[stageEvents.length - 1];
+                const isCurrent = index === activeJourneyIndex && !isDelivered;
+                const isComplete = index < activeJourneyIndex || (isDelivered && index <= activeJourneyIndex);
+                const StageIcon = isComplete ? CheckCircleSolid : stage.icon;
+                const stageStatus = latestStageEvent?.status
+                  ? getShipmentStatusDisplayText(latestStageEvent.status) || String(latestStageEvent.status).replace(/_/g, ' ')
+                  : null;
+
+                return (
+                  <li key={stage.id} className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 pb-3 last:pb-0">
+                    {index < SHIPMENT_JOURNEY_STAGES.length - 1 && (
+                      <span className={`absolute bottom-0 left-[15px] top-8 w-px ${isComplete ? 'bg-emerald-300' : 'bg-slate-200'}`} aria-hidden="true" />
+                    )}
+                    <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border ${
+                      isComplete ? 'border-emerald-200 bg-emerald-50 text-emerald-600' :
+                      isCurrent ? 'border-orange-200 bg-orange-50 text-[#F56602] ring-2 ring-orange-100' :
+                      'border-slate-200 bg-white text-slate-400'
+                    }`}>
+                      <StageIcon className="h-4 w-4" />
+                    </span>
+                    <div className={`min-w-0 rounded-lg px-3 py-2 ${isCurrent ? 'bg-orange-50/70' : ''}`}>
+                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-medium ${isComplete || isCurrent ? 'text-slate-900' : 'text-slate-500'}`}>{stage.label}</span>
+                          {isCurrent && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-orange-700">Current</span>}
+                        </div>
+                        {latestStageEvent?.timestamp || latestStageEvent?.date ? (
+                          <time className="text-xs text-slate-500">{formatShipmentDate(latestStageEvent.timestamp || latestStageEvent.date, 'short')}</time>
+                        ) : !isComplete && !isCurrent ? (
+                          <span className="text-xs text-slate-400">Upcoming</span>
+                        ) : null}
+                      </div>
+                      {stageStatus && stageStatus.toLowerCase() !== stage.label.toLowerCase() && (
+                        <p className="mt-0.5 text-xs capitalize text-slate-500">{stageStatus}</p>
+                      )}
+                      {latestStageEvent?.location && (
+                        <p className="mt-1 inline-flex items-center text-xs text-slate-500">
+                          <MapPin className="mr-1 h-3 w-3" />{latestStageEvent.location}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
-          <ProgressBar progress={progress} showLabel />
         </div>
 
         <div className="border-b">
@@ -1387,55 +1476,68 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin" style={{ color: COLORS.primary }} />
                 </div>
-              ) : (trackingData?.timeline?.length > 0 || timeline.length > 0) ? (
-                <div className="relative">
-                  {(trackingData?.timeline || timeline).map((event, index) => (
-                    <div key={index} className="flex items-start space-x-3 mb-4">
-                      <div className="flex-shrink-0">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          event.status === 'delivered' || event.status === 'completed' ? 'bg-green-100' :
-                          event.status === 'arrived_at_destination_port' ? 'bg-teal-100' :
-                          event.status === 'customs_cleared' ? 'bg-emerald-100' :
-                          event.status === 'out_for_delivery' ? 'bg-pink-100' :
-                          event.status === 'in_transit' ? 'bg-cyan-100' :
-                          event.status === 'dispatched' ? 'bg-red-100' :
-                          'bg-gray-100'
-                        }`}>
-                          {event.status === 'delivered' && <CheckCircleSolid className="h-4 w-4 text-green-600" />}
-                          {event.status === 'arrived_at_destination_port' && <Flag className="h-4 w-4 text-teal-600" />}
-                          {event.status === 'customs_cleared' && <Shield className="h-4 w-4 text-emerald-600" />}
-                          {event.status === 'out_for_delivery' && <Truck className="h-4 w-4 text-pink-600" />}
-                          {event.status === 'in_transit' && <Truck className="h-4 w-4 text-cyan-600" />}
-                          {event.status === 'dispatched' && <Send className="h-4 w-4 text-red-600" />}
-                          {(!event.status || event.status === 'pending') && <Clock className="h-4 w-4 text-gray-600" />}
-                        </div>
-                      </div>
-                      <div className="flex-1 bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {event.statusLabel || getShipmentStatusDisplayText(event.status) || event.title || 'Update'}
-                            </p>
-                            {event.description && (
-                              <p className="text-xs text-gray-600 mt-1">{event.description}</p>
-                            )}
-                            {event.location && (
-                              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                {event.location}
-                              </p>
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-400">
-                            {formatShipmentDate(event.timestamp || event.date, 'long')}
-                          </p>
-                        </div>
-                      </div>
+              ) : ((trackingData?.timeline?.length ? trackingData.timeline : timeline).length > 0) ? (
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                  <div className="mb-5 flex items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                      <h5 className="text-sm font-semibold text-slate-900">Shipment journey</h5>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {(trackingData?.timeline?.length ? trackingData.timeline : timeline).length} updates · Oldest to newest
+                      </p>
                     </div>
-                  ))}
+                    {trackingNum && (
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                        {trackingNum}
+                      </span>
+                    )}
+                  </div>
+
+                  <ol className="max-h-[55vh] space-y-0 overflow-y-auto pr-1">
+                    {[...(trackingData?.timeline?.length ? trackingData.timeline : timeline)]
+                      .sort((a, b) => new Date(a.timestamp || a.date || a.formattedDate || 0) - new Date(b.timestamp || b.date || b.formattedDate || 0))
+                      .map((event, index, events) => {
+                        const eventStatus = event.status || event.title || event.type;
+                        const statusConfig = STATUS_CONFIG[eventStatus];
+                        const EventIcon = statusConfig?.icon || Activity;
+                        const eventDate = event.timestamp || event.date || event.formattedDate;
+                        const eventLabel = event.statusLabel || getShipmentStatusDisplayText(event.status) || event.title || 'Shipment update';
+                        const isLatest = index === events.length - 1;
+
+                        return (
+                          <li key={event._id || `${eventStatus}-${eventDate || index}-${index}`} className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 pb-5 last:pb-0">
+                            {index < events.length - 1 && (
+                              <span className="absolute bottom-0 left-[15px] top-8 w-px bg-slate-200" aria-hidden="true" />
+                            )}
+                            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border ${isLatest ? 'border-orange-200 bg-orange-50 text-[#F56602]' : 'border-slate-200 bg-white text-slate-500'}`}>
+                              <EventIcon className="h-4 w-4" />
+                            </span>
+                            <article className={`min-w-0 rounded-lg border p-3 sm:p-4 ${isLatest ? 'border-orange-200 bg-orange-50/40' : 'border-slate-200 bg-white'}`}>
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                                  <h6 className="text-sm font-semibold text-slate-900">{eventLabel}</h6>
+                                  {isLatest && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-orange-700">Latest</span>}
+                                </div>
+                                <time className="shrink-0 text-xs text-slate-500">
+                                  {eventDate ? formatShipmentDate(eventDate, 'long') : 'Time unavailable'}
+                                </time>
+                              </div>
+                              {event.description && <p className="mt-1.5 text-sm leading-5 text-slate-600">{event.description}</p>}
+                              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                                {event.location && <span className="inline-flex items-center"><MapPin className="mr-1 h-3.5 w-3.5" />{event.location}</span>}
+                                {event.type && <span className="rounded bg-slate-100 px-1.5 py-0.5 capitalize">{String(event.type).replace(/_/g, ' ')}</span>}
+                              </div>
+                            </article>
+                          </li>
+                        );
+                      })}
+                  </ol>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">No timeline events yet</p>
+                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-10 text-center">
+                  <Activity className="mx-auto h-8 w-8 text-slate-400" />
+                  <p className="mt-2 text-sm font-medium text-slate-700">No timeline updates yet</p>
+                  <p className="mt-1 text-xs text-slate-500">Shipment events will appear here as they are recorded.</p>
+                </div>
               )}
             </div>
           )}

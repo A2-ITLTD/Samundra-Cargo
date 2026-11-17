@@ -100,7 +100,7 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: siteUrl("/customer/dashboard"),
+                item: siteUrl("/invoice"),
               },
               {
                 "@type": "ListItem",

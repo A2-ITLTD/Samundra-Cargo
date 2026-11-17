@@ -10,6 +10,7 @@ export const login = async (email, password) => {
     
     if (response.data.success && response.data.token) {
       // Store in cookies
+      Cookies.set('authToken', response.data.token, { expires: 7, path: '/' });
       Cookies.set('token', response.data.token, { expires: 7, path: '/' });
       Cookies.set('user', JSON.stringify(response.data.data), { expires: 7, path: '/' });
       
@@ -98,10 +99,13 @@ export const verifyOTP = async (email, otp) => {
     const response = await axiosInstance.post('/customer/verify-otp', { email, otp });
     
     if (response.data.success && response.data.token) {
+      // Keep all token keys in sync because getAuthToken prefers authToken.
+      Cookies.set('authToken', response.data.token, { expires: 7, path: '/' });
       Cookies.set('token', response.data.token, { expires: 7, path: '/' });
       Cookies.set('user', JSON.stringify(response.data.data), { expires: 7, path: '/' });
       
       if (typeof window !== 'undefined') {
+        localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('auth_token', response.data.token);
         localStorage.setItem('user_details', JSON.stringify(response.data.data));
         window.dispatchEvent(new Event('authChange'));

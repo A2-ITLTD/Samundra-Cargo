@@ -97,64 +97,88 @@ const STATUS_CONFIG = {
     label: "Received at Warehouse",
     color: "bg-red-100 text-red-800",
     icon: Building,
-    progress: 14,
+    progress: 20,
     order: 2,
     stage: "warehouse",
+  },
+  inspected: {
+    label: "Inspection Complete",
+    color: "bg-emerald-100 text-emerald-800",
+    icon: CheckCircle,
+    progress: 25,
+    order: 3,
+    stage: "warehouse",
+  },
+  consolidated: {
+    label: "Consolidated",
+    color: "bg-indigo-100 text-indigo-800",
+    icon: Layers,
+    progress: 30,
+    order: 4,
+    stage: "dispatch",
+  },
+  ready_for_dispatch: {
+    label: "Ready for Dispatch",
+    color: "bg-purple-100 text-purple-800",
+    icon: CheckCircle,
+    progress: 35,
+    order: 5,
+    stage: "dispatch",
   },
   picked_up_from_warehouse: {
     label: "Picked up from Warehouse",
     color: "bg-blue-100 text-blue-800",
     icon: Truck,
-    progress: 20,
-    order: 3,
+    progress: 40,
+    order: 6,
     stage: "warehouse",
   },
   loaded_into_container: {
     label: "Loaded into Container",
     color: "bg-blue-200 text-blue-800",
     icon: Container,
-    progress: 30,
-    order: 4,
+    progress: 45,
+    order: 7,
     stage: "dispatch",
   },
   container_sealed: {
     label: "Container Sealed",
     color: "bg-blue-300 text-blue-900",
     icon: Shield,
-    progress: 35,
-    order: 5,
+    progress: 50,
+    order: 8,
     stage: "dispatch",
   },
   departed_port_of_origin: {
     label: "Departed Port of Origin",
     color: "bg-red-100 text-red-800",
     icon: Ship,
-    progress: 40,
-    order: 6,
+    progress: 55,
+    order: 9,
     stage: "transit",
   },
   in_transit_sea_freight: {
     label: "In Transit (Sea Freight)",
     color: "bg-amber-100 text-amber-800",
     icon: Ship,
-    progress: 50,
-    order: 7,
+    progress: 60,
+    order: 10,
     stage: "transit",
   },
   arrived_at_destination_port: {
     label: "Arrived at Destination Port",
     color: "bg-green-100 text-green-800",
     icon: Flag,
-    progress: 60,
-    order: 8,
+    progress: 70,
+    order: 11,
     stage: "arrival",
   },
   under_customs_clearance: {
     label: "Under Customs Clearance",
     color: "bg-blue-100 text-blue-800",
     icon: Shield,
-    progress: 70,
-    order: 9,
+    progress: 75,
+    order: 12,
     stage: "customs",
   },
   customs_cleared: {
@@ -162,7 +186,7 @@ const STATUS_CONFIG = {
     color: "bg-emerald-100 text-emerald-800",
     icon: Shield,
     progress: 80,
-    order: 10,
+    order: 13,
     stage: "customs",
   },
   unloaded_from_vessel: {
@@ -170,7 +194,7 @@ const STATUS_CONFIG = {
     color: "bg-emerald-100 text-emerald-800",
     icon: Container,
     progress: 85,
-    order: 11,
+    order: 14,
     stage: "customs",
   },
   out_for_delivery: {
@@ -178,7 +202,7 @@ const STATUS_CONFIG = {
     color: "bg-sky-100 text-sky-800",
     icon: Truck,
     progress: 90,
-    order: 12,
+    order: 15,
     stage: "delivery",
   },
   delivered: {
@@ -186,7 +210,7 @@ const STATUS_CONFIG = {
     color: "bg-green-600 text-white",
     icon: CheckCircle,
     progress: 95,
-    order: 13,
+    order: 16,
     stage: "delivery",
   },
   completed: {
@@ -194,7 +218,7 @@ const STATUS_CONFIG = {
     color: "bg-green-800 text-white",
     icon: CheckCircle,
     progress: 100,
-    order: 16,
+    order: 17,
     stage: "completed",
   },
   on_hold: {
@@ -202,7 +226,7 @@ const STATUS_CONFIG = {
     color: "bg-gray-100 text-gray-800",
     icon: Pause,
     progress: 50,
-    order: 14,
+    order: 18,
     stage: "hold",
   },
   cancelled: {
@@ -210,7 +234,7 @@ const STATUS_CONFIG = {
     color: "bg-red-100 text-red-800",
     icon: Ban,
     progress: 0,
-    order: 15,
+    order: 19,
     stage: "cancelled",
   },
   returned: {
@@ -218,7 +242,7 @@ const STATUS_CONFIG = {
     color: "bg-red-100 text-red-800",
     icon: RotateCcw,
     progress: 100,
-    order: 16,
+    order: 20,
     stage: "return",
   },
   return_requested: {
@@ -226,7 +250,7 @@ const STATUS_CONFIG = {
     color: "bg-red-100 text-red-700",
     icon: Undo2,
     progress: 0,
-    order: 17,
+    order: 21,
     stage: "return",
     hideProgress: true,
   },
@@ -235,7 +259,7 @@ const STATUS_CONFIG = {
     color: "bg-purple-50 text-purple-700",
     icon: ThumbsUp,
     progress: 100,
-    order: 18,
+    order: 22,
     stage: "return",
   },
   return_rejected: {
@@ -243,7 +267,7 @@ const STATUS_CONFIG = {
     color: "bg-red-50 text-red-700",
     icon: ThumbsDown,
     progress: 0,
-    order: 19,
+    order: 23,
     stage: "return",
     hideProgress: true,
   },
@@ -252,7 +276,7 @@ const STATUS_CONFIG = {
     color: "bg-purple-50 text-purple-700",
     icon: Undo2,
     progress: 50,
-    order: 20,
+    order: 24,
     stage: "return",
   },
   return_completed: {
@@ -260,13 +284,12 @@ const STATUS_CONFIG = {
     color: "bg-green-50 text-green-700",
     icon: CheckCircle,
     progress: 100,
-    order: 21,
+    order: 25,
     stage: "return",
   },
 };
 
-// ==================== CANONICAL 16-STATUS STEPS ====================
-// Timeline shows EXACTLY these 16 statuses in this order
+// ==================== CANONICAL SHIPMENT STATUS STEPS ====================
 const CANONICAL_STATUS_STEPS = [
   { status: "booking", label: "Booking", icon: Package, order: 0 },
   { status: "pending", label: "Pending", icon: Package, order: 1 },
@@ -277,70 +300,88 @@ const CANONICAL_STATUS_STEPS = [
     order: 2,
   },
   {
+    status: "inspected",
+    label: "Inspection Complete",
+    icon: CheckCircle,
+    order: 3,
+  },
+  {
+    status: "consolidated",
+    label: "Consolidated",
+    icon: Layers,
+    order: 4,
+  },
+  {
+    status: "ready_for_dispatch",
+    label: "Ready for Dispatch",
+    icon: CheckCircle,
+    order: 5,
+  },
+  {
     status: "picked_up_from_warehouse",
     label: "Picked up from Warehouse",
     icon: Truck,
-    order: 3,
+    order: 6,
   },
   {
     status: "loaded_into_container",
     label: "Loaded into Container",
     icon: Container,
-    order: 4,
+    order: 7,
   },
   {
     status: "container_sealed",
     label: "Container Sealed",
     icon: Shield,
-    order: 5,
+    order: 8,
   },
   {
     status: "departed_port_of_origin",
     label: "Departed Port of Origin",
     icon: Ship,
-    order: 6,
+    order: 9,
   },
   {
     status: "in_transit_sea_freight",
     label: "In Transit (Sea Freight)",
     icon: Ship,
-    order: 7,
+    order: 10,
   },
   {
     status: "arrived_at_destination_port",
     label: "Arrived at Destination Port",
     icon: Flag,
-    order: 8,
+    order: 11,
   },
   {
     status: "under_customs_clearance",
     label: "Under Customs Clearance",
     icon: Shield,
-    order: 9,
+    order: 12,
   },
   {
     status: "customs_cleared",
     label: "Customs Cleared",
     icon: Shield,
-    order: 10,
+    order: 13,
   },
   {
     status: "unloaded_from_vessel",
     label: "Unloaded from Vessel",
     icon: Container,
-    order: 11,
+    order: 14,
   },
   {
     status: "out_for_delivery",
     label: "Out for Delivery",
     icon: Truck,
-    order: 12,
+    order: 15,
   },
-  { status: "delivered", label: "Delivered", icon: CheckCircle, order: 13 },
-  { status: "completed", label: "Completed", icon: CheckCircle, order: 16 },
-  { status: "on_hold", label: "On Hold", icon: Pause, order: 14 },
-  { status: "cancelled", label: "Cancelled", icon: Ban, order: 15 },
-  { status: "returned", label: "Returned", icon: RotateCcw, order: 16 },
+  { status: "delivered", label: "Delivered", icon: CheckCircle, order: 16 },
+  { status: "completed", label: "Completed", icon: CheckCircle, order: 17 },
+  { status: "on_hold", label: "On Hold", icon: Pause, order: 18 },
+  { status: "cancelled", label: "Cancelled", icon: Ban, order: 19 },
+  { status: "returned", label: "Returned", icon: RotateCcw, order: 20 },
 ];
 
 // ==================== SEARCH TYPE HELPERS ====================
@@ -358,9 +399,9 @@ const SEARCH_TYPE_PLACEHOLDERS = {
   container_number: "Enter container number (e.g., ABCD1234567)",
 };
 
-const buildTrackingPath = (value) => {
-  const normalizedValue = value.trim();
-  return `/tracking-number/${encodeURIComponent(normalizedValue)}`;
+const buildTrackingPath = (value, type = 'tracking_number') => {
+  const params = new URLSearchParams({ tracking: value.trim(), type });
+  return `/tracking-number?${params.toString()}`;
 };
 
 const decodeTrackingValue = (value) => {
@@ -404,10 +445,12 @@ const TIMELINE_STATUS_ALIASES = {
   warehouse: "received_at_warehouse",
   picked: "picked_up_from_warehouse",
   picked_up: "picked_up_from_warehouse",
-  consolidated: "picked_up_from_warehouse",
+  consolidated: "consolidated",
+  consolidating: "consolidated",
+  inspected: "inspected",
   loaded_into_container: "loaded_into_container",
   loaded_in_container: "loaded_into_container",
-  ready_for_dispatch: "loaded_into_container",
+  ready_for_dispatch: "ready_for_dispatch",
   loaded: "loaded_into_container",
   sealed: "container_sealed",
   container_sealed: "container_sealed",
@@ -463,12 +506,12 @@ const MANUAL_TIMELINE_LABELS = {
   booking_requested: "Booking Created",
 };
 
-// Case-wise buttons: For manual/new bookings, start from "Picked up from Warehouse" (skip Booking & Pending)
+// Manual/new shipment actions begin at pickup, after the booking-only stages.
 const getActionButtonsForStatus = (source, currentStatusOrder) => {
-  // For manual/new bookings: buttons start from Picked up from Warehouse (order 2)
   if (source === "manual" || source === "new") {
+    const pickupOrder = CANONICAL_STATUS_STEPS.find(step => step.status === "picked_up_from_warehouse")?.order ?? 2;
     return CANONICAL_STATUS_STEPS.filter(
-      (step) => step.order >= 2 && step.order > currentStatusOrder,
+      (step) => step.order >= pickupOrder && step.order > currentStatusOrder,
     );
   }
   // For other cases: buttons progress through all statuses after current
@@ -488,7 +531,7 @@ export default function TrackingPage() {
   const [showAllPackages, setShowAllPackages] = useState(false);
   const [expandedPackages, setExpandedPackages] = useState(new Set());
   const [activeTab, setActiveTab] = useState("timeline");
-  const [timelineView, setTimelineView] = useState("newToOld");
+  const [timelineView, setTimelineView] = useState("oldToNew");
   const [shareSuccess, setShareSuccess] = useState(false);
   const [showRouteDetails, setShowRouteDetails] = useState(false);
   const [searchType, setSearchType] = useState("tracking_number");
@@ -602,7 +645,7 @@ export default function TrackingPage() {
     window.history.replaceState(
       null,
       "",
-      buildTrackingPath(normalizedTracking),
+      buildTrackingPath(normalizedTracking, searchType),
     );
 
     setLoading(true);
@@ -946,26 +989,7 @@ export default function TrackingPage() {
 
   const getTimelineNewToOld = () => {
     const timeline = getTimelineOldToNew();
-    const reversed = [...timeline].reverse();
-
-    // Ensure 'received_at_warehouse' stays at the bottom (last position)
-    const receivedAtWarehouseIndex = reversed.findIndex(
-      (e) =>
-        e.mappedStatus === "received_at_warehouse" ||
-        e.status === "received_at_warehouse",
-    );
-
-    if (
-      receivedAtWarehouseIndex > -1 &&
-      receivedAtWarehouseIndex < reversed.length - 1
-    ) {
-      // Remove received_at_warehouse from current position
-      const receivedEvent = reversed.splice(receivedAtWarehouseIndex, 1)[0];
-      // Add it at the end (bottom)
-      reversed.push(receivedEvent);
-    }
-
-    return reversed;
+    return [...timeline].reverse();
   };
 
   const getTimeline = () => {
@@ -2846,6 +2870,10 @@ export default function TrackingPage() {
                       "price_quoted",
                       "booking_confirmed",
                       "pending",
+                      "received_at_warehouse",
+                      "inspected",
+                      "consolidated",
+                      "ready_for_dispatch",
                       "picked_up_from_warehouse",
                       "loaded_into_container",
                       "container_sealed",
@@ -2933,13 +2961,7 @@ export default function TrackingPage() {
                           const stepDate = formatDateOnly(
                             event.date || event.timestamp || event.createdAt,
                           );
-                          let stepDescription = event.description || "";
-
-                          // Override description for picked_up_from_warehouse
-                          if (stepStatus === "picked_up_from_warehouse") {
-                            stepDescription =
-                              "Shipment Updated into Picked up from Warehouse";
-                          }
+                          const stepDescription = event.description || "";
 
                           return (
                             <div

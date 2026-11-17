@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { uploadsImg } from "@/utils/confiq";
 
-export default function logisticTimeline() {
+export default function LogisticTimeline() {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const timelineEvents = [
@@ -70,9 +70,11 @@ export default function logisticTimeline() {
   };
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % timelineEvents.length);
+    }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [timelineEvents.length]);
 
   return (
     <div className="relative min-h-[400px] overflow-hidden">

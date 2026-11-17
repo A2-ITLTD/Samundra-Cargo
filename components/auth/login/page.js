@@ -516,7 +516,7 @@ export default function LoginPage() {
               </div>
               <h2 className="text-3xl font-bold text-white">Customer Login</h2>
               <p className="text-gray-200 mt-2">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link href="/auth/register" className="text-[#E67E22] font-semibold hover:underline">
                   Create account
                 </Link>
