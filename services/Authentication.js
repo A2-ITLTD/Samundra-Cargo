@@ -10,13 +10,14 @@ export const login = async (email, password) => {
     
     if (response.data.success && response.data.token) {
       // Store in cookies
-      Cookies.set('token', response.data.token, { expires: 7 });
-      Cookies.set('user', JSON.stringify(response.data.data), { expires: 7 });
+      Cookies.set('token', response.data.token, { expires: 7, path: '/' });
+      Cookies.set('user', JSON.stringify(response.data.data), { expires: 7, path: '/' });
       
       // Also store in localStorage for compatibility
       if (typeof window !== 'undefined') {
         localStorage.setItem('auth_token', response.data.token);
         localStorage.setItem('user_details', JSON.stringify(response.data.data));
+        window.dispatchEvent(new Event('authChange'));
       }
     }
     
@@ -57,9 +58,9 @@ export const googleLogin = async (idToken, email, name, photoURL, uid) => {
       }
       
       // Store new data in cookies
-      Cookies.set('token', response.data.token, { expires: 7 });
-      Cookies.set('authToken', response.data.token, { expires: 7 });
-      Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+      Cookies.set('token', response.data.token, { expires: 7, path: '/' });
+      Cookies.set('authToken', response.data.token, { expires: 7, path: '/' });
+      Cookies.set('user', JSON.stringify(userData), { expires: 7, path: '/' });
       
       // Also store in localStorage for compatibility
       if (typeof window !== 'undefined') {
@@ -97,12 +98,13 @@ export const verifyOTP = async (email, otp) => {
     const response = await axiosInstance.post('/customer/verify-otp', { email, otp });
     
     if (response.data.success && response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 7 });
-      Cookies.set('user', JSON.stringify(response.data.data), { expires: 7 });
+      Cookies.set('token', response.data.token, { expires: 7, path: '/' });
+      Cookies.set('user', JSON.stringify(response.data.data), { expires: 7, path: '/' });
       
       if (typeof window !== 'undefined') {
         localStorage.setItem('auth_token', response.data.token);
         localStorage.setItem('user_details', JSON.stringify(response.data.data));
+        window.dispatchEvent(new Event('authChange'));
       }
     }
     
@@ -201,7 +203,7 @@ export const getUserProfile = async () => {
         localStorage.setItem('user_details', JSON.stringify(userData));
         localStorage.setItem('user', JSON.stringify(userData));
       }
-      Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+      Cookies.set('user', JSON.stringify(userData), { expires: 7, path: '/' });
     }
     
     return response.data;
@@ -219,7 +221,7 @@ export const updateProfile = async (userData) => {
     if (response.data.success) {
       const updatedUser = response.data.data;
       
-      Cookies.set('user', JSON.stringify(updatedUser), { expires: 7 });
+      Cookies.set('user', JSON.stringify(updatedUser), { expires: 7, path: '/' });
       
       if (typeof window !== 'undefined') {
         localStorage.setItem('user_details', JSON.stringify(updatedUser));
@@ -389,12 +391,12 @@ export const syncUserData = (userData, token) => {
   
   if (token) {
     localStorage.setItem('auth_token', token);
-    Cookies.set('token', token, { expires: 7 });
+    Cookies.set('token', token, { expires: 7, path: '/' });
   }
   
   if (userData) {
     localStorage.setItem('user_details', JSON.stringify(userData));
     localStorage.setItem('user', JSON.stringify(userData));
-    Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+    Cookies.set('user', JSON.stringify(userData), { expires: 7, path: '/' });
   }
 };

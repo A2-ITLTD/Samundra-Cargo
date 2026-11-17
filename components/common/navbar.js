@@ -65,12 +65,9 @@ const Navbar = () => {
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('authChange', handleAuthChange);
     
-    const interval = setInterval(checkAuth, 2000);
-    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authChange', handleAuthChange);
-      clearInterval(interval);
     };
   }, []);
 
@@ -115,18 +112,11 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_details');
-      localStorage.removeItem('user');
-    }
-    
     setIsLoggedIn(false);
     setUser(null);
     setIsMenuOpen(false);
     window.dispatchEvent(new Event('authChange'));
-    router.push('/');
+    router.replace('/');
   };
 
   const navbarTopPosition = isTopbarVisible ? 'top-9' : 'top-0';

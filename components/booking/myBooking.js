@@ -440,21 +440,19 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-y-auto">
+    <div className="fixed inset-0 z-[110] overflow-y-auto">
       <div
         className="fixed inset-0 bg-black/35"
         onClick={onClose}
       />
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-
+      <div className="relative z-10 flex min-h-full items-start justify-center px-4 pt-24 pb-8 sm:pt-28">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className={`relative z-20 inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle ${sizes[size]} w-full`}
+          className={`relative z-20 flex max-h-[calc(100vh-8rem)] w-full flex-col bg-white rounded-2xl text-left overflow-hidden shadow-xl ${sizes[size]}`}
         >
           <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -465,7 +463,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
               <X className="h-5 w-5 text-gray-500" />
             </button>
           </div>
-          <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
+          <div className="px-6 py-4 min-h-0 overflow-y-auto">
             {children}
           </div>
         </motion.div>

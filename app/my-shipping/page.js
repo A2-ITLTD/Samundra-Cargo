@@ -1,6 +1,7 @@
 import ToastProvider from "@/components/common/ToastProvider";
 import ShipmentsPage from "@/components/myShipping/myShipping";
 import React, { Suspense } from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for My Shipments
 export const metadata = {
@@ -20,13 +21,13 @@ export const metadata = {
     "Real-time Tracking",
   ],
   alternates: {
-    canonical: "http://localhost:3000/shipments",
+    canonical: siteUrl("/shipments"),
   },
   openGraph: {
     title: "My Shipments | Samudera Traffic Co., Ltd. Group",
     description:
       "Track and manage your shipments with Samudera Traffic Co., Ltd. Group. View real-time shipment status, track packages, monitor transit progress, and manage your logistics operations from one dashboard.",
-    url: "http://localhost:3000/shipments",
+    url: siteUrl("/shipments"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +70,12 @@ export default function Page() {
             name: "My Shipments Dashboard",
             description:
               "Track and manage your shipments with Samudera Traffic Co., Ltd. Group. View real-time shipment status, track packages, monitor transit progress, and manage your logistics operations.",
-            url: "http://localhost:3000/shipments",
+            url: siteUrl("/shipments"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ItemList",
@@ -97,19 +98,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: "http://localhost:3000/customer/dashboard",
+                item: siteUrl("/customer/dashboard"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Shipments",
-                item: "http://localhost:3000/shipments",
+                item: siteUrl("/shipments"),
               },
             ],
           }),
@@ -124,8 +125,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             areaServed: {
               "@type": "Country",

@@ -1,5 +1,6 @@
 import PrivacyPolicy from "@/components/footer/policy";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Privacy Policy
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Privacy Rights",
   ],
   alternates: {
-    canonical: "http://localhost:3000/privacy-policy",
+    canonical: siteUrl("/privacy-policy"),
   },
   openGraph: {
     title: "Privacy Policy | Samudera Traffic Co., Ltd. Group",
     description:
       "Read our Privacy Policy to understand how Samudera Traffic Co., Ltd. Group collects, uses, and protects your personal information. Learn about data security and your privacy rights.",
-    url: "http://localhost:3000/privacy-policy",
+    url: siteUrl("/privacy-policy"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Privacy Policy",
             description:
               "Read our Privacy Policy to understand how Samudera Traffic Co., Ltd. Group collects, uses, and protects your personal information. Learn about data security, your rights, and our commitment to privacy.",
-            url: "http://localhost:3000/privacy-policy",
+            url: siteUrl("/privacy-policy"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -94,13 +95,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Privacy Policy",
-                item: "http://localhost:3000/privacy-policy",
+                item: siteUrl("/privacy-policy"),
               },
             ],
           }),
@@ -115,8 +116,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             address: {
               "@type": "PostalAddress",
@@ -135,7 +136,7 @@ export default function Page() {
             },
             legalName: "Samudera Traffic Co., Ltd. Group",
             foundingDate: "2009",
-            privacyPolicy: "http://localhost:3000/privacy-policy",
+            privacyPolicy: siteUrl("/privacy-policy"),
           }),
         }}
       />
@@ -150,7 +151,7 @@ export default function Page() {
             name: "Privacy Policy of Samudera Traffic Co., Ltd. Group",
             description:
               "This Privacy Policy describes how Samudera Traffic Co., Ltd. Group collects, uses, and protects personal information of its customers and website visitors.",
-            url: "http://localhost:3000/privacy-policy",
+            url: siteUrl("/privacy-policy"),
             lastReviewed: "2026-03-10",
             inLanguage: "en-US",
             jurisdiction: "USA",

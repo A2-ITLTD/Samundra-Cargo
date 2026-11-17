@@ -57,10 +57,14 @@ const Button = ({
   onClick, 
   className = '', 
   icon: Icon,
+  iconClassName = '',
+  ariaLabel,
+  title,
   disabled 
 }) => {
   const variants = {
-    primary: 'bg-red-600 text-white hover:bg-red-600',
+    primary: 'bg-amber-700 text-white hover:bg-amber-800',
+    booking: 'bg-red-600 text-white hover:bg-red-600',
     secondary: 'bg-blue-600 text-white hover:bg-blue-700',
     outline: 'border-2 border-red-500 text-red-500 hover:bg-red-50',
     ghost: 'text-gray-600 hover:bg-gray-100',
@@ -76,12 +80,21 @@ const Button = ({
     lg: 'px-5 py-2.5 text-base'
   };
 
-  const IconComponent = Icon && typeof Icon === 'function' ? Icon : null;
+  const iconClasses = `h-4 w-4 ${iconClassName} ${children ? 'mr-2' : ''}`.trim();
+  const iconNode = Icon
+    ? React.isValidElement(Icon)
+      ? React.cloneElement(Icon, {
+          className: `${Icon.props.className || 'h-4 w-4'} ${iconClassName} ${children ? 'mr-2' : ''}`.trim(),
+        })
+      : React.createElement(Icon, { className: iconClasses })
+    : null;
 
   return (
     <button
       onClick={onClick}
       disabled={disabled || isLoading}
+      aria-label={ariaLabel}
+      title={title}
       className={`rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 inline-flex items-center justify-center ${variants[variant]} ${sizes[size]} ${className} ${disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {isLoading ? (
@@ -91,7 +104,7 @@ const Button = ({
         </>
       ) : (
         <>
-          {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
+          {iconNode}
           {children}
         </>
       )}
@@ -136,10 +149,10 @@ const Input = ({ type = 'text', label, value, onChange, placeholder, icon: Icon,
 );
 
 // ==================== SELECT COMPONENT ====================
-const Select = ({ label, value, onChange, options, placeholder, icon: Icon, required, className = '' }) => (
-  <div className="space-y-1">
+const Select = ({ name, label, value, onChange, options, placeholder, icon: Icon, required, className = '' }) => (
+  <div className="space-y-2 rounded-lg border border-slate-300 bg-slate-100 p-3">
     {label && (
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-semibold text-slate-900">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
     )}
@@ -150,13 +163,14 @@ const Select = ({ label, value, onChange, options, placeholder, icon: Icon, requ
         </div>
       )}
       <select
+        name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-3 py-2 text-sm border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[${COLORS.primary}] focus:border-transparent ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
+        className={`w-full min-h-12 bg-white text-slate-900 px-3 py-2 text-sm font-medium border-2 border-slate-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
       >
-        <option value="">{placeholder}</option>
+        <option value="" className="bg-white text-slate-900">{placeholder}</option>
         {options.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value} className="bg-white text-slate-900">{option.label}</option>
         ))}
       </select>
       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -1457,13 +1471,6 @@ export default function ShipmentsPage() {
         sort: filters.sort
       };
       
-      const firstResponse = await getMyShipments(firstParams);
-      let firstData = [];
-      if (firstResponse.success) {
-        firstData = firstResponse.data || [];
-      }
-
-      // Fetch from second API
       const secondParams = {
         page: 1,
         limit: 100,
@@ -1471,8 +1478,17 @@ export default function ShipmentsPage() {
         sortOrder: 'desc',
         status: filters.status === 'cancelled' ? 'cancelled' : (filters.status === 'delivered' ? 'delivered' : '')
       };
-      
-      const secondResponse = await getMyNewShipments(secondParams);
+
+      const [firstResponse, secondResponse] = await Promise.all([
+        getMyShipments(firstParams),
+        getMyNewShipments(secondParams)
+      ]);
+      let firstData = [];
+      if (firstResponse.success) {
+        firstData = firstResponse.data || [];
+      }
+
+      // Both shipment sources are fetched in parallel above.
       let secondData = [];
       if (secondResponse.success) {
         secondData = secondResponse.data || [];
@@ -1561,8 +1577,10 @@ export default function ShipmentsPage() {
   }, [filters]);
 
   useEffect(() => {
-    fetchAllShipments();
-  }, [fetchAllShipments]);
+    const delay = filters.search ? 300 : 0;
+    const timer = setTimeout(fetchAllShipments, delay);
+    return () => clearTimeout(timer);
+  }, [fetchAllShipments, filters.search]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -1654,18 +1672,10 @@ export default function ShipmentsPage() {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <Button 
-                variant="light" 
+              <Button
+                variant="booking"
                 size="sm" 
-                onClick={handleManualRefresh}
-                icon={RefreshCw}
-              >
-                Refresh
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm" 
-                onClick={() => router.push('/Bookings/my_bookings')}
+                onClick={() => router.push('/Bookings/create_bookings')}
                 icon={Plus}
               >
                 Create New Booking
@@ -1708,8 +1718,8 @@ export default function ShipmentsPage() {
         {/* Search and Filters */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
           <div className="p-4">
-            <div className="flex items-center space-x-2">
-              <div className="flex-1">
+            <form onSubmit={(event) => event.preventDefault()} className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex-1 min-w-0">
                 <Input
                   type="text"
                   placeholder="Search by shipment number, tracking number..."
@@ -1719,7 +1729,7 @@ export default function ShipmentsPage() {
                 />
               </div>
               <Button 
-                variant={showFilters ? 'primary' : 'light'} 
+                variant="primary"
                 size="md" 
                 onClick={() => setShowFilters(!showFilters)}
                 icon={FilterIcon} 
@@ -1727,7 +1737,7 @@ export default function ShipmentsPage() {
                 Filters
                 {(filters.status || filters.search) && (
                   <span className="ml-2 bg-white text-[#E67E22] rounded-full px-2 py-0.5 text-xs">
-                    {Object.values(filters).filter(v => v && v !== '' && v !== 10 && v !== 1).length}
+                    {(filters.status ? 1 : 0) + (filters.search?.trim() ? 1 : 0)}
                   </span>
                 )}
               </Button>
@@ -1736,7 +1746,16 @@ export default function ShipmentsPage() {
                   Clear
                 </Button>
               )}
-            </div>
+              <Button
+                variant="light"
+                size="md"
+                onClick={handleManualRefresh}
+                icon={RefreshCw}
+                iconClassName={loading ? 'animate-spin' : ''}
+                ariaLabel="Refresh shipments"
+                title="Refresh shipments"
+              />
+            </form>
 
             {showFilters && (
               <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1799,7 +1818,7 @@ export default function ShipmentsPage() {
           <Button 
             variant="primary" 
             size="sm" 
-            onClick={() => router.push('/Bookings/my_bookings')}
+            onClick={() => router.push('/Bookings/create_bookings')}
             className="mt-3"
             icon={Plus}
           >

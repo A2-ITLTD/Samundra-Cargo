@@ -209,16 +209,20 @@ const Button = ({
   isLoading, 
   onClick, 
   className = '', 
-  icon: Icon,  // এটি একটি কম্পোনেন্ট হবে, JSX নয়
+  icon: Icon,
+  iconClassName = '',
+  ariaLabel,
+  title,
   disabled 
 }) => {
   const variants = {
-    primary: `bg-[${COLORS.primary}] text-white hover:bg-[#d35400]`,
-    secondary: `bg-[${COLORS.secondary}] text-white hover:bg-[#2c5a8c]`,
-    outline: `border-2 border-[${COLORS.primary}] text-[${COLORS.primary}] hover:bg-[#fef2e6]`,
+    primary: 'bg-amber-700 text-white hover:bg-amber-800',
+    booking: 'bg-red-600 text-white hover:bg-red-600',
+    secondary: 'bg-[#3C719D] text-white hover:bg-[#2c5a8c]',
+    outline: 'border-2 border-[#F91616] text-[#F91616] hover:bg-[#fef2e6]',
     ghost: 'text-gray-600 hover:bg-gray-100',
-    success: `bg-[${COLORS.success}] text-white hover:bg-[#0d9488]`,
-    danger: `bg-[${COLORS.danger}] text-white hover:bg-[#dc2626]`,
+    success: 'bg-[#10b981] text-white hover:bg-[#0d9488]',
+    danger: 'bg-[#ef4444] text-white hover:bg-[#dc2626]',
     light: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
   };
 
@@ -229,13 +233,21 @@ const Button = ({
     lg: 'px-5 py-2.5 text-base'
   };
 
-  // Icon কম্পোনেন্ট চেক করুন
-  const IconComponent = Icon && typeof Icon === 'function' ? Icon : null;
+  const iconClasses = `h-4 w-4 ${iconClassName} ${children ? 'mr-2' : ''}`.trim();
+  const iconNode = Icon
+    ? React.isValidElement(Icon)
+      ? React.cloneElement(Icon, {
+          className: `${Icon.props.className || 'h-4 w-4'} ${iconClassName} ${children ? 'mr-2' : ''}`.trim(),
+        })
+      : React.createElement(Icon, { className: iconClasses })
+    : null;
 
   return (
     <button
       onClick={onClick}
       disabled={disabled || isLoading}
+      aria-label={ariaLabel}
+      title={title}
       className={`rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center ${variants[variant]} ${sizes[size]} ${className} ${disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {isLoading ? (
@@ -245,7 +257,7 @@ const Button = ({
         </>
       ) : (
         <>
-          {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
+          {iconNode}
           {children}
         </>
       )}
@@ -290,10 +302,10 @@ const Input = ({ type = 'text', label, value, onChange, placeholder, icon: Icon,
 );
 
 // ==================== SELECT COMPONENT ====================
-const Select = ({ label, value, onChange, options, placeholder, icon: Icon, required, error, className = '' }) => (
-  <div className="space-y-1">
+const Select = ({ name, label, value, onChange, options, placeholder, icon: Icon, required, error, className = '' }) => (
+  <div className="space-y-2 rounded-lg border border-slate-300 bg-slate-100 p-3">
     {label && (
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-semibold text-slate-900">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
     )}
@@ -304,13 +316,14 @@ const Select = ({ label, value, onChange, options, placeholder, icon: Icon, requ
         </div>
       )}
       <select
+        name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-3 py-2 text-sm border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[${COLORS.primary}] focus:border-transparent ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
+        className={`w-full min-h-12 bg-white text-slate-900 px-3 py-2 text-sm font-medium border-2 border-slate-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
       >
-        <option value="">{placeholder}</option>
+        <option value="" className="bg-white text-slate-900">{placeholder}</option>
         {options.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value} className="bg-white text-slate-900">{option.label}</option>
         ))}
       </select>
       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -1545,6 +1558,10 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
 export default function ShipmentsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoadingOtherSource, setIsLoadingOtherSource] = useState(false);
+  const hasLoadedShipments = useRef(false);
+  const shipmentRequestId = useRef(0);
   const [myShipments, setMyShipments] = useState([]);
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
 
@@ -1594,7 +1611,9 @@ export default function ShipmentsPage() {
   }, []);
 
   const fetchMyShipments = async () => {
-    setLoading(true);
+    const requestId = ++shipmentRequestId.current;
+    if (!hasLoadedShipments.current) setLoading(true);
+    setIsLoadingOtherSource(false);
     try {
       const firstParams = {
         page: 1,
@@ -1603,15 +1622,6 @@ export default function ShipmentsPage() {
         search: filters.search,
         sort: filters.sort
       };
-      const firstResponse = await getMyShipments(firstParams);
-      let firstData = [];
-      if (firstResponse.success) {
-        firstData = (firstResponse.data || []).map(shipment => ({
-          ...shipment,
-          _apiSource: 'first'
-        }));
-      }
-
       const secondParams = {
         page: 1,
         limit: 100,
@@ -1620,62 +1630,104 @@ export default function ShipmentsPage() {
         ...(filters.search && { search: filters.search }),
         status: filters.status === 'cancelled' ? 'cancelled' : (filters.status === 'delivered' ? 'delivered' : '')
       };
-      const secondResponse = await getMyNewShipments(secondParams);
+
+      let firstData = [];
       let secondData = [];
-      if (secondResponse.success) {
-        secondData = (secondResponse.data || []).map(shipment => ({
-          ...shipment,
-          _apiSource: 'second'
-        }));
-      }
+      let settledRequests = 0;
 
-      let combined = [...firstData, ...secondData];
+      const publishAvailableShipments = () => {
+        if (requestId !== shipmentRequestId.current) return;
+        let combined = [...firstData, ...secondData];
 
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        combined = combined.filter(shipment =>
-          (shipment.shipmentNumber || shipment._id || '').toString().toLowerCase().includes(searchLower) ||
-          (shipment.trackingNumber || '').toString().toLowerCase().includes(searchLower)
-        );
-      }
+        if (filters.search) {
+          const searchLower = filters.search.toLowerCase();
+          combined = combined.filter(shipment =>
+            (shipment.shipmentNumber || shipment._id || '').toString().toLowerCase().includes(searchLower) ||
+            (shipment.trackingNumber || '').toString().toLowerCase().includes(searchLower)
+          );
+        }
 
-      if (filters.status) {
-        combined = combined.filter(shipment => {
-          const status = shipment.status || shipment.shipmentStatus;
-          return status === filters.status;
+        if (filters.status) {
+          combined = combined.filter(shipment => {
+            const status = shipment.status || shipment.shipmentStatus;
+            return status === filters.status;
+          });
+        }
+
+        const sortField = filters.sort.startsWith('-') ? filters.sort.substring(1) : filters.sort;
+        const sortOrder = filters.sort.startsWith('-') ? 'desc' : 'asc';
+        combined.sort((a, b) => {
+          let aVal = a[sortField] || a.createdAt;
+          let bVal = b[sortField] || b.createdAt;
+          if (sortField === 'createdAt') {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+          if (sortOrder === 'asc') return aVal > bVal ? 1 : -1;
+          return aVal < bVal ? 1 : -1;
         });
-      }
 
-      const sortField = filters.sort.startsWith('-') ? filters.sort.substring(1) : filters.sort;
-      const sortOrder = filters.sort.startsWith('-') ? 'desc' : 'asc';
-      combined.sort((a, b) => {
-        let aVal = a[sortField] || a.createdAt;
-        let bVal = b[sortField] || b.createdAt;
-        if (sortField === 'createdAt') {
-          aVal = new Date(aVal);
-          bVal = new Date(bVal);
+        const normalized = combined.map(shipment => ({
+          ...shipment,
+          isManual: Boolean(shipment.isManual || shipment.source === 'manual' || shipment._apiSource === 'second'),
+          status: shipment.status || shipment.shipmentStatus,
+          packages: shipment.packages || shipment.shipmentDetails?.packageDetails || []
+        }));
+
+        setMyShipments(normalized);
+        setPagination({
+          total: normalized.length,
+          page: filters.page,
+          limit: filters.limit,
+          pages: Math.max(1, Math.ceil(normalized.length / filters.limit))
+        });
+        setStats(getShipmentSummary(normalized));
+
+      };
+
+      const markRequestSettled = () => {
+        if (requestId !== shipmentRequestId.current) return;
+        settledRequests += 1;
+        if (settledRequests === 2) {
+          hasLoadedShipments.current = true;
+          setLoading(false);
+          setIsLoadingOtherSource(false);
         }
-        if (sortOrder === 'asc') {
-          return aVal > bVal ? 1 : -1;
-        }
-        return aVal < bVal ? 1 : -1;
-      });
+      };
 
-      const normalized = combined.map(shipment => ({
-        ...shipment,
-        isManual: Boolean(shipment.isManual || shipment.source === 'manual' || shipment._apiSource === 'second'),
-        status: shipment.status || shipment.shipmentStatus,
-        packages: shipment.packages || shipment.shipmentDetails?.packageDetails || []
-      }));
+      const firstRequest = getMyShipments(firstParams)
+        .then((response) => {
+          if (response.success) {
+            firstData = (response.data || []).map(shipment => ({
+              ...shipment,
+              _apiSource: 'first'
+            }));
+            hasLoadedShipments.current = true;
+            setLoading(false);
+            setIsLoadingOtherSource(true);
+            publishAvailableShipments();
+          }
+        })
+        .catch((error) => console.error('Legacy shipment request failed:', error))
+        .finally(markRequestSettled);
 
-      setMyShipments(normalized);
-      setPagination({
-        total: normalized.length,
-        page: filters.page,
-        limit: filters.limit,
-        pages: Math.max(1, Math.ceil(normalized.length / filters.limit))
-      });
-      setStats(getShipmentSummary(normalized));
+      const secondRequest = getMyNewShipments(secondParams)
+        .then((response) => {
+          if (response.success) {
+            secondData = (response.data || []).map(shipment => ({
+              ...shipment,
+              _apiSource: 'second'
+            }));
+            hasLoadedShipments.current = true;
+            setLoading(false);
+            setIsLoadingOtherSource(true);
+            publishAvailableShipments();
+          }
+        })
+        .catch((error) => console.error('New shipment request failed:', error))
+        .finally(markRequestSettled);
+
+      await Promise.all([firstRequest, secondRequest]);
     } catch (error) {
       console.error('Fetch shipments error:', error);
       toast.error('Failed to fetch your shipments');
@@ -1695,8 +1747,10 @@ export default function ShipmentsPage() {
   };
 
   useEffect(() => {
-    fetchMyShipments();
-  }, [filters.page, filters.status, filters.sort]);
+    const delay = filters.search ? 300 : 0;
+    const timer = setTimeout(fetchMyShipments, delay);
+    return () => clearTimeout(timer);
+  }, [filters.page, filters.status, filters.search, filters.sort]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -1744,8 +1798,13 @@ export default function ShipmentsPage() {
   };
 
   const handleManualRefresh = async () => {
-    await fetchMyShipments();
-    toast.info('Shipments refreshed');
+    setIsRefreshing(true);
+    try {
+      await fetchMyShipments();
+      toast.info('Shipments refreshed');
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const filterByStatus = (statusKey) => {
@@ -1788,17 +1847,9 @@ export default function ShipmentsPage() {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <Button 
-                variant="light" 
+              <Button variant="booking"
                 size="sm" 
-                onClick={handleManualRefresh}
-                icon={RefreshCw}
-              >
-                Refresh
-              </Button>
-              <Button className='bg-red-600 text-white'
-                size="sm" 
-                onClick={() => router.push('/Bookings/my_bookings')}
+                onClick={() => router.push('/Bookings/create_bookings')}
                 icon={Plus}
               >
                 Create New Booking
@@ -1828,8 +1879,8 @@ export default function ShipmentsPage() {
         {/* Search and Filters */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
           <div className="p-4">
-            <div className="flex items-center space-x-2">
-              <div className="flex-1">
+            <form onSubmit={(event) => event.preventDefault()} className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex-1 min-w-0">
                 <Input
                   type="text"
                   placeholder="Search by shipment number, tracking number..."
@@ -1838,8 +1889,8 @@ export default function ShipmentsPage() {
                   icon={Search}
                 />
               </div>
-              <Button 
-                variant={showFilters ? 'primary' : 'light'} 
+              <Button
+                variant="primary"
                 size="md" 
                 onClick={() => setShowFilters(!showFilters)}
                 icon={FilterIcon}
@@ -1847,7 +1898,7 @@ export default function ShipmentsPage() {
                 Filters
                 {(filters.status || filters.search) && (
                   <span className="ml-2 bg-white text-[#E67E22] rounded-full px-2 py-0.5 text-xs">
-                    {Object.values(filters).filter(v => v && v !== '' && v !== 10 && v !== 1).length}
+                    {(filters.status ? 1 : 0) + (filters.search?.trim() ? 1 : 0)}
                   </span>
                 )}
               </Button>
@@ -1856,7 +1907,16 @@ export default function ShipmentsPage() {
                   Clear
                 </Button>
               )}
-            </div>
+              <Button
+                variant="light"
+                size="md"
+                onClick={handleManualRefresh}
+                icon={RefreshCw}
+                iconClassName={isRefreshing ? 'animate-spin' : ''}
+                ariaLabel="Refresh shipments"
+                title="Refresh shipments"
+              />
+            </form>
 
             {showFilters && (
               <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1915,15 +1975,6 @@ export default function ShipmentsPage() {
                         <Package className="h-12 w-12 text-gray-400 mb-3" />
                         <p className="text-sm text-gray-500">No shipments found</p>
                         <p className="text-xs text-gray-400 mt-1">Create a booking to start shipping</p>
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
-                          onClick={() => router.push('/Bookings/my_bookings')}
-                          className="mt-3"
-                          icon={Plus}
-                        >
-                          Create New Booking
-                        </Button>
                       </div>
                     </td>
                   </tr>

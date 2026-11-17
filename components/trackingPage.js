@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { uploadsImg } from "@/utils/confiq";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -52,9 +53,33 @@ const SEARCH_TYPE_STORAGE_KEY = "samudera_tracking_search_type";
 
 // ==================== STATUS CONFIG ====================
 const STATUS_CONFIG = {
+  booking_requested: {
+    label: "Booking Requested",
+    color: "bg-amber-100 text-amber-800",
+    icon: Package,
+    progress: 2,
+    order: 0,
+    stage: "booking",
+  },
+  price_quoted: {
+    label: "Quote Sent",
+    color: "bg-sky-100 text-sky-800",
+    icon: Package,
+    progress: 4,
+    order: 1,
+    stage: "booking",
+  },
+  booking_confirmed: {
+    label: "Booking Confirmed",
+    color: "bg-blue-100 text-blue-800",
+    icon: Package,
+    progress: 7,
+    order: 2,
+    stage: "booking",
+  },
   booking: {
-    label: "Booking",
-    color: "bg-gray-100 text-gray-600",
+    label: "Booking Requested",
+    color: "bg-amber-100 text-amber-800",
     icon: Package,
     progress: 5,
     order: 0,
@@ -368,9 +393,9 @@ const detectInputType = (value) => {
 };
 
 const TIMELINE_STATUS_ALIASES = {
-  booking_requested: "booking",
-  booking: "booking",
-  draft: "booking",
+  booking_requested: "booking_requested",
+  booking: "booking_requested",
+  draft: "booking_requested",
   pending_consolidation: "pending",
   pending: "pending",
   in_progress: "pending",
@@ -2381,7 +2406,7 @@ export default function TrackingPage() {
     <div className="bg-gray-50 min-h-screen pt-4 md:pt-24 sm:pt-0 -mt-12 md:-mt-24">
       {/* Hero Section */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-[url('http://localhost:8000/uploads/images/aboutBannerimg.jpeg')] " />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${uploadsImg("images/aboutBannerimg.jpeg")}')` }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-gray-50/10" />
         <div className="absolute inset-0 max-w-4xl mx-auto text-center px-4 pt-12 sm:pt-16 text-white flex flex-col justify-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 drop-shadow-lg">
@@ -2481,11 +2506,14 @@ export default function TrackingPage() {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
                 <div className="min-w-0">
                   <h2 className="text-xl sm:text-2xl font-bold break-words">
-                    {trackingData.trackingNumber || "N/A"}
+                    {trackingData.trackingNumber ||
+                      trackingData.shipmentNumber ||
+                      trackingData.bookingNumber ||
+                      "N/A"}
                   </h2>
                   <p className="text-sm sm:text-base text-gray-500 break-words">
                     Booking: {trackingData.bookingNumber || "N/A"} | Shipment:{" "}
-                    {trackingData.shipmentNumber || "N/A"}
+                    {trackingData.shipmentNumber || "Not created yet"}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 sm:justify-end">
@@ -2800,17 +2828,24 @@ export default function TrackingPage() {
                 <div className="p-4 sm:p-6">
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-gray-900">
-                      Shipment Timeline
+                      {trackingData.source === "booking"
+                        ? "Booking Timeline"
+                        : "Shipment Timeline"}
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Track your shipment through each step of the journey
+                      {trackingData.source === "booking"
+                        ? "Track your booking request and quote status"
+                        : "Track your shipment through each step of the journey"}
                     </p>
                   </div>
 
                   {(() => {
-                    // Define canonical timeline steps in order (with booking_confirmed replacing booking/pending)
+                    // Keep booking-request, quote, and confirmation as separate states.
                     const TIMELINE_STEPS = [
+                      "booking_requested",
+                      "price_quoted",
                       "booking_confirmed",
+                      "pending",
                       "picked_up_from_warehouse",
                       "loaded_into_container",
                       "container_sealed",
@@ -2836,24 +2871,23 @@ export default function TrackingPage() {
                       const status = normalizeTimelineStatus(
                         event.mappedStatus || event.status,
                       );
-                      // Map booking/pending to booking_confirmed for display
-                      const displayStatus =
-                        status === "booking" || status === "pending"
-                          ? "booking_confirmed"
-                          : status;
+                      const displayStatus = status;
                       if (!eventsByStatus[displayStatus]) {
                         eventsByStatus[displayStatus] = event;
                       }
                     });
 
-                    // Determine if in early stage (Booking Confirmed only)
+                    // Booking and shipment states share a page, but should not
+                    // claim a booking is confirmed before the quote is accepted.
                     const currentStatus = normalizeTimelineStatus(
                       trackingData?.status || "",
                     );
                     const isEarlyStage = [
+                      "booking_requested",
+                      "price_quoted",
+                      "booking_confirmed",
                       "booking",
                       "pending",
-                      "booking_requested",
                       "draft",
                     ].includes(currentStatus);
 
@@ -2863,10 +2897,7 @@ export default function TrackingPage() {
                       const status = normalizeTimelineStatus(
                         event.mappedStatus || event.status,
                       );
-                      const displayStatus =
-                        status === "booking" || status === "pending"
-                          ? "booking_confirmed"
-                          : status;
+                      const displayStatus = status;
                       if (!uniqueStatusesInOrder.includes(displayStatus)) {
                         uniqueStatusesInOrder.push(displayStatus);
                       }
@@ -2875,8 +2906,8 @@ export default function TrackingPage() {
                     // Filter to display steps (in chronological order of first occurrence)
                     let displaySteps = [];
                     if (isEarlyStage) {
-                      displaySteps = uniqueStatusesInOrder.filter(
-                        (step) => step === "booking_confirmed",
+                      displaySteps = uniqueStatusesInOrder.filter((step) =>
+                        TIMELINE_STEPS.slice(0, 4).includes(step),
                       );
                     } else {
                       displaySteps = uniqueStatusesInOrder;
@@ -2897,11 +2928,7 @@ export default function TrackingPage() {
                       <div className="grid grid-cols-1 gap-4">
                         {displaySteps.map((stepStatus, index) => {
                           const event = eventsByStatus[stepStatus];
-                          // Use booking_confirmed label or fallback to status config
-                          const stepTitle =
-                            stepStatus === "booking_confirmed"
-                              ? "Booking Confirmed"
-                              : getStatusConfig(stepStatus).label;
+                          const stepTitle = getStatusConfig(stepStatus).label;
                           const stepLocation = getDisplayLocation(event);
                           const stepDate = formatDateOnly(
                             event.date || event.timestamp || event.createdAt,

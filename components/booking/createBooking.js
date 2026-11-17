@@ -1115,7 +1115,7 @@ export default function CreateBooking() {
           autoClose: 3000
         });
         setShowSuccess(true);
-        setTimeout(() => router.push('/Bookings/my_bookings'), 2000);
+        router.replace('/Bookings/my_bookings');
       } else {
         const detailErrors = response.error?.details;
         if (Array.isArray(detailErrors) && detailErrors.length > 0) {

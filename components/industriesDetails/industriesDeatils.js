@@ -1,5 +1,6 @@
 import React from 'react'
 import { HiChevronRight } from 'react-icons/hi'
+import { uploadsImg } from '@/utils/confiq'
 
 function industriesDeatils() {
   return (
@@ -8,7 +9,7 @@ function industriesDeatils() {
       <div
         className="min-h-[300px] bg-cover bg-center bg-no-repeat relative mx-6"
         style={{
-          backgroundImage: "url('http://localhost:8000/uploads/images/aboutBanner.jpg')",
+          backgroundImage: `url('${uploadsImg('images/aboutBanner.jpg')}')`,
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>

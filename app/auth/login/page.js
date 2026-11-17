@@ -1,5 +1,6 @@
 import LoginPage from "@/components/auth/login/page";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Login
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Real-time Tracking",
   ],
   alternates: {
-    canonical: "http://localhost:3000/auth/login",
+    canonical: siteUrl("/auth/login"),
   },
   openGraph: {
     title: "Customer Login | Samudera Traffic Co., Ltd. Group",
     description:
       "Login to your Samudera Traffic Co., Ltd. Group customer account. Track shipments in real-time, manage your logistics operations, access digital documents, and enjoy seamless supply chain management.",
-    url: "http://localhost:3000/auth/login",
+    url: siteUrl("/auth/login"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Customer Login",
             description:
               "Login to your Samudera Traffic Co., Ltd. Group customer account. Track shipments in real-time, manage your logistics operations, access digital documents, and enjoy seamless supply chain management.",
-            url: "http://localhost:3000/auth/login",
+            url: siteUrl("/auth/login"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +84,7 @@ export default function Page() {
               description: "Customer authentication for logistics account access",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/auth/login",
+                urlTemplate: siteUrl("/auth/login"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,19 +104,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Authentication",
-                item: "http://localhost:3000/auth",
+                item: siteUrl("/auth"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Customer Login",
-                item: "http://localhost:3000/auth/login",
+                item: siteUrl("/auth/login"),
               },
             ],
           }),

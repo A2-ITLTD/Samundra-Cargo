@@ -1,5 +1,6 @@
 import Price from "@/components/about/price";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Pricing
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Logistics Plans",
   ],
   alternates: {
-    canonical: "http://localhost:3000/pricing",
+    canonical: siteUrl("/pricing"),
   },
   openGraph: {
     title: "Pricing Table | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore our competitive pricing plans for logistics, supply chain management, warehousing, and cargo services. Find the right solution for your business needs at Samudera Traffic Co., Ltd. Group.",
-    url: "http://localhost:3000/pricing",
+    url: siteUrl("/pricing"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -74,8 +75,8 @@ export default function Page() {
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}

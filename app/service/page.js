@@ -1,6 +1,7 @@
 import ToastProvider from "@/components/common/ToastProvider";
 import Service from "@/components/service";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Our Services
 export const metadata = {
@@ -20,13 +21,13 @@ export const metadata = {
     "Freight Forwarding",
   ],
   alternates: {
-    canonical: "http://localhost:3000/service",
+    canonical: siteUrl("/service"),
   },
   openGraph: {
     title: "Our Services | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore our comprehensive logistics services at Samudera Traffic Co., Ltd. Group. We offer sea freight, air freight, road freight, warehousing, customs clearance, and supply chain solutions for businesses worldwide.",
-    url: "http://localhost:3000/service",
+    url: siteUrl("/service"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +70,12 @@ export default function Page() {
             name: "Our Services",
             description:
               "Explore our comprehensive logistics services at Samudera Traffic Co., Ltd. Group. We offer sea freight, air freight, road freight, warehousing, customs clearance, and supply chain solutions.",
-            url: "http://localhost:3000/service",
+            url: siteUrl("/service"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ItemList",
@@ -134,13 +135,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Services",
-                item: "http://localhost:3000/service",
+                item: siteUrl("/service"),
               },
             ],
           }),

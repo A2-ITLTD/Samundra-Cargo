@@ -3,6 +3,7 @@ import { HiChevronRight } from 'react-icons/hi'
 import Serve from "@/components/home/industries"
 import Ecommerce from "@/components/home/ecommerce"
 import Partner from "@/components/home/partners"
+import { uploadsImg } from "@/utils/confiq"
 function industries() {
   return (
     <div>
@@ -10,7 +11,7 @@ function industries() {
             <div
               className="min-h-[300px] bg-cover bg-center bg-no-repeat relative mx-6"
               style={{
-                backgroundImage: "url('http://localhost:8000/uploads/images/shipping.png')",
+                backgroundImage: `url('${uploadsImg('images/shipping.png')}')`,
               }}
             >
               <div className="absolute inset-0 bg-black/30"></div>

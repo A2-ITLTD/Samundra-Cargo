@@ -1,5 +1,6 @@
 import OurCompany from "@/components/about/company";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Our Company
 export const metadata = {
@@ -18,13 +19,13 @@ export const metadata = {
     "Logistics Partner",
   ],
   alternates: {
-    canonical: "http://localhost:3000/our-company",
+    canonical: siteUrl("/our-company"),
   },
   openGraph: {
     title: "Our Company | Samudera Traffic Co., Ltd. Group",
     description:
       "Discover Samudera Traffic Co., Ltd. Group, our mission, vision, and dedicated team providing logistics, supply chain management, warehousing, and cargo solutions worldwide.",
-    url: "http://localhost:3000/our-company",
+    url: siteUrl("/our-company"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -58,14 +59,14 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             name: "Our Company",
-            url: "http://localhost:3000/our-company",
+            url: siteUrl("/our-company"),
             description:
               "Discover Samudera Traffic Co., Ltd. Group, our mission, vision, and dedicated team providing logistics, supply chain management, warehousing, and cargo solutions worldwide.",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}

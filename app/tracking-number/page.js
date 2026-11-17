@@ -1,5 +1,6 @@
 import TrackingPage from "@/components/trackingPage";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Track Shipment
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Delivery Status",
   ],
   alternates: {
-    canonical: "http://localhost:3000/tracking-number",
+    canonical: siteUrl("/tracking-number"),
   },
   openGraph: {
     title: "Track Shipment | Samudera Traffic Co., Ltd. Group",
     description:
       "Track your shipment in real-time with Samudera Traffic Co., Ltd. Group. Enter your tracking number to get live updates on your cargo location, status, and estimated delivery time.",
-    url: "http://localhost:3000/tracking-number",
+    url: siteUrl("/tracking-number"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Track Shipment",
             description:
               "Track your shipment in real-time with Samudera Traffic Co., Ltd. Group. Enter your tracking number to get live updates on your cargo location, status, and estimated delivery time.",
-            url: "http://localhost:3000/tracking-number",
+            url: siteUrl("/tracking-number"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +84,7 @@ export default function Page() {
               description: "Track your shipment by entering tracking number",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/tracking-number",
+                urlTemplate: siteUrl("/tracking-number"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,13 +104,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Track Shipment",
-                item: "http://localhost:3000/tracking-number",
+                item: siteUrl("/tracking-number"),
               },
             ],
           }),
@@ -138,7 +139,7 @@ export default function Page() {
               name: "Track Shipment",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/tracking-number/{tracking_number}",
+                urlTemplate: siteUrl("/tracking-number/{tracking_number}"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },

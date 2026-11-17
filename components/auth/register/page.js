@@ -9,7 +9,7 @@ import { registerCustomer } from '@/services/Authentication';
 
 import { useSiteSettings } from '@/components/context/SiteSettingsProvider';
 
-const useAuth = () => {
+const useAuth = (router) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -27,9 +27,7 @@ const useAuth = () => {
         draggable: true,
       });
  
-      setTimeout(() => {
-        window.location.href = '/auth/verify-otp?email=' + encodeURIComponent(userData.email);
-      }, 2000);
+      router.push('/auth/verify-otp?email=' + encodeURIComponent(userData.email));
 
       return response;
     } catch (error) { 
@@ -160,7 +158,7 @@ const Button = ({
 export default function Page() {
   const site = useSiteSettings();
   const router = useRouter();
-  const { register, loading } = useAuth();
+  const { register, loading } = useAuth(router);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);

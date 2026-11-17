@@ -186,14 +186,11 @@ export default function VerifyOTPPage() {
       const response = await verifyOTP(email, otpString);
       
       if (response.success) {
-        toast.success('Email verified successfully! Redirecting to your profile...', {
+        toast.success('Email verified successfully!', {
           position: 'top-right',
           autoClose: 3000,
         });
-        
-        setTimeout(() => {
-          router.push('/profile');
-        }, 3000);
+        router.replace('/profile');
       }
     } catch (error) {
       toast.error(error.message || 'Invalid OTP. Please try again.', {

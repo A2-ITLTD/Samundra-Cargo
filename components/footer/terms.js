@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { uploadsImg } from "@/utils/confiq";
 import {
   Phone,
   Mail,
@@ -467,7 +468,7 @@ const TermsOfService = () => {
                   className="aspect-square bg-primary/10 rounded-lg overflow-hidden cursor-pointer"
                 >
                   <img
-                    src={`http://localhost:8000/uploads/images/gal${id}.jpg`}
+                    src={uploadsImg(`images/gal${id}.jpg`)}
                     alt={`Gallery ${id}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -493,7 +494,7 @@ const TermsOfService = () => {
           className="absolute inset-0 z-0 opacity-40"
           style={{
             backgroundImage:
-              "url('http://localhost:8000/uploads/images/products.jpg')",
+              `url('${uploadsImg("images/products.jpg")}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

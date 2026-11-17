@@ -1,6 +1,7 @@
 import ToastProvider from "@/components/common/ToastProvider";
 import ProfilePage from "@/components/profile/profile";
 import React, { Suspense } from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Profile
 export const metadata = {
@@ -20,13 +21,13 @@ export const metadata = {
     "Business Profile",
   ],
   alternates: {
-    canonical: "http://localhost:3000/profile",
+    canonical: siteUrl("/profile"),
   },
   openGraph: {
     title: "My Profile | Samudera Traffic Co., Ltd. Group",
     description:
       "Manage your Samudera Traffic Co., Ltd. Group profile. Update personal information, view business details, manage preferences, and access security settings for your logistics account.",
-    url: "http://localhost:3000/profile",
+    url: siteUrl("/profile"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +70,12 @@ export default function Page() {
             name: "User Profile",
             description:
               "Manage your Samudera Traffic Co., Ltd. Group profile. Update personal information, view business details, manage preferences, and access security settings.",
-            url: "http://localhost:3000/profile",
+            url: siteUrl("/profile"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ProfilePage",
@@ -97,19 +98,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: "http://localhost:3000/customer/dashboard",
+                item: siteUrl("/customer/dashboard"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Profile",
-                item: "http://localhost:3000/profile",
+                item: siteUrl("/profile"),
               },
             ],
           }),
@@ -124,7 +125,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Person",
             name: "Samudera Traffic Co., Ltd. Customer",
-            url: "http://localhost:3000/profile",
+            url: siteUrl("/profile"),
             email: "customer@samuderathai.com",
             telephone: "+66977830395",
             worksFor: {

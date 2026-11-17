@@ -1,4 +1,5 @@
 import Banner from '@/components/home/banner';
+import { siteUrl } from '@/utils/confiq';
 import State from '@/components/home/states';
 import History from '@/components/home/history';
 import LogisticTimeline from '@/components/home/logiaticTimeline';
@@ -31,13 +32,13 @@ export const metadata = {
     "Global Logistics",
   ],
   alternates: {
-    canonical: "http://localhost:3000",
+    canonical: siteUrl("/"),
   },
   openGraph: {
     title: "Samudera Traffic Co., Ltd. Group | Global Freight Forwarding & Supply Chain Solutions",
     description:
       "Samudera Traffic Co., Ltd. Group provides international freight forwarding, sea freight, air freight, warehousing, customs clearance, and supply chain solutions worldwide.",
-    url: "http://localhost:3000",
+    url: siteUrl("/"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -91,12 +92,12 @@ export default function Page() {
             name: "Samudera Traffic Co., Ltd. Group",
             description:
               "Samudera Traffic Co., Ltd. Group provides international freight forwarding, sea freight, air freight, warehousing, customs clearance, and supply chain solutions worldwide.",
-            url: "http://localhost:3000",
+            url: siteUrl("/"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}
@@ -110,8 +111,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             foundingDate: "2009",
             address: {
@@ -146,7 +147,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             name: "Samudera Traffic Co., Ltd. Group",
-            image: "http://localhost:3000/logo.png",
+            image: siteUrl("/logo.png"),
             address: {
               "@type": "PostalAddress",
               streetAddress: "Green Tower, 9th floor, 3656/27-28 Rama IV Road",
@@ -224,7 +225,7 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
             ],
           }),
