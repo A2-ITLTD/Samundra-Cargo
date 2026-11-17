@@ -19,13 +19,13 @@ export const metadata = {
     "Real-time Tracking",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/auth/login",
+    canonical: "http://localhost:3000/auth/login",
   },
   openGraph: {
     title: "Customer Login | Samudera Traffic Co., Ltd. Group",
     description:
       "Login to your Samudera Traffic Co., Ltd. Group customer account. Track shipments in real-time, manage your logistics operations, access digital documents, and enjoy seamless supply chain management.",
-    url: "https://samuderathai.com/auth/login",
+    url: "http://localhost:3000/auth/login",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Customer Login",
             description:
               "Login to your Samudera Traffic Co., Ltd. Group customer account. Track shipments in real-time, manage your logistics operations, access digital documents, and enjoy seamless supply chain management.",
-            url: "https://samuderathai.com/auth/login",
+            url: "http://localhost:3000/auth/login",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +83,7 @@ export default function Page() {
               description: "Customer authentication for logistics account access",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://samuderathai.com/auth/login",
+                urlTemplate: "http://localhost:3000/auth/login",
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,19 +103,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Authentication",
-                item: "https://samuderathai.com/auth",
+                item: "http://localhost:3000/auth",
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Customer Login",
-                item: "https://samuderathai.com/auth/login",
+                item: "http://localhost:3000/auth/login",
               },
             ],
           }),

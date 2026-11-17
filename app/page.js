@@ -31,13 +31,13 @@ export const metadata = {
     "Global Logistics",
   ],
   alternates: {
-    canonical: "https://samuderathai.com",
+    canonical: "http://localhost:3000",
   },
   openGraph: {
     title: "Samudera Traffic Co., Ltd. Group | Global Freight Forwarding & Supply Chain Solutions",
     description:
       "Samudera Traffic Co., Ltd. Group provides international freight forwarding, sea freight, air freight, warehousing, customs clearance, and supply chain solutions worldwide.",
-    url: "https://samuderathai.com",
+    url: "http://localhost:3000",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -91,12 +91,12 @@ export default function Page() {
             name: "Samudera Traffic Co., Ltd. Group",
             description:
               "Samudera Traffic Co., Ltd. Group provides international freight forwarding, sea freight, air freight, warehousing, customs clearance, and supply chain solutions worldwide.",
-            url: "https://samuderathai.com",
+            url: "http://localhost:3000",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
           }),
         }}
@@ -110,8 +110,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com",
-            logo: "https://samuderathai.com/logo.png",
+            url: "http://localhost:3000",
+            logo: "http://localhost:3000/logo.png",
             description: "Leading logistics and supply chain solutions provider",
             foundingDate: "2009",
             address: {
@@ -146,7 +146,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             name: "Samudera Traffic Co., Ltd. Group",
-            image: "https://samuderathai.com/logo.png",
+            image: "http://localhost:3000/logo.png",
             address: {
               "@type": "PostalAddress",
               streetAddress: "Green Tower, 9th floor, 3656/27-28 Rama IV Road",
@@ -224,7 +224,7 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
             ],
           }),

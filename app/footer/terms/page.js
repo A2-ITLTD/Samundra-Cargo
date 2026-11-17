@@ -19,13 +19,13 @@ export const metadata = {
     "User Agreement",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/terms-of-service",
+    canonical: "http://localhost:3000/terms-of-service",
   },
   openGraph: {
     title: "Terms of Service | Samudera Traffic Co., Ltd. Group",
     description:
       "Read the Terms of Service for Samudera Traffic Co., Ltd. Group. Understand our legal framework for international freight forwarding, logistics management, and Samudera Cargo operations.",
-    url: "https://samuderathai.com/terms-of-service",
+    url: "http://localhost:3000/terms-of-service",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Terms of Service",
             description:
               "Read the Terms of Service for Samudera Traffic Co., Ltd. Group. Understand our legal framework for international freight forwarding, logistics management, and Samudera Cargo operations across Thailand, China, USA, UK & Canada.",
-            url: "https://samuderathai.com/terms-of-service",
+            url: "http://localhost:3000/terms-of-service",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -94,13 +94,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Terms of Service",
-                item: "https://samuderathai.com/terms-of-service",
+                item: "http://localhost:3000/terms-of-service",
               },
             ],
           }),
@@ -115,8 +115,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com",
-            logo: "https://samuderathai.com/logo.png",
+            url: "http://localhost:3000",
+            logo: "http://localhost:3000/logo.png",
             description: "Leading logistics and supply chain solutions provider",
             address: {
               "@type": "PostalAddress",
@@ -135,7 +135,7 @@ export default function Page() {
             },
             legalName: "Samudera Traffic Co., Ltd. Group",
             foundingDate: "2009",
-            termsOfService: "https://samuderathai.com/terms-of-service",
+            termsOfService: "http://localhost:3000/terms-of-service",
           }),
         }}
       />
@@ -150,7 +150,7 @@ export default function Page() {
             name: "Terms of Service of Samudera Traffic Co., Ltd. Group",
             description:
               "These Terms of Service govern the use of Samudera Traffic Co., Ltd. Group's freight forwarding platform and logistics services.",
-            url: "https://samuderathai.com/terms-of-service",
+            url: "http://localhost:3000/terms-of-service",
             lastReviewed: "2026-02-02",
             inLanguage: "en-US",
             jurisdiction: "USA",

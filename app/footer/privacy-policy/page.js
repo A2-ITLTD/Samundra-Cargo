@@ -19,13 +19,13 @@ export const metadata = {
     "Privacy Rights",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/privacy-policy",
+    canonical: "http://localhost:3000/privacy-policy",
   },
   openGraph: {
     title: "Privacy Policy | Samudera Traffic Co., Ltd. Group",
     description:
       "Read our Privacy Policy to understand how Samudera Traffic Co., Ltd. Group collects, uses, and protects your personal information. Learn about data security and your privacy rights.",
-    url: "https://samuderathai.com/privacy-policy",
+    url: "http://localhost:3000/privacy-policy",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Privacy Policy",
             description:
               "Read our Privacy Policy to understand how Samudera Traffic Co., Ltd. Group collects, uses, and protects your personal information. Learn about data security, your rights, and our commitment to privacy.",
-            url: "https://samuderathai.com/privacy-policy",
+            url: "http://localhost:3000/privacy-policy",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -94,13 +94,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Privacy Policy",
-                item: "https://samuderathai.com/privacy-policy",
+                item: "http://localhost:3000/privacy-policy",
               },
             ],
           }),
@@ -115,8 +115,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com",
-            logo: "https://samuderathai.com/logo.png",
+            url: "http://localhost:3000",
+            logo: "http://localhost:3000/logo.png",
             description: "Leading logistics and supply chain solutions provider",
             address: {
               "@type": "PostalAddress",
@@ -135,7 +135,7 @@ export default function Page() {
             },
             legalName: "Samudera Traffic Co., Ltd. Group",
             foundingDate: "2009",
-            privacyPolicy: "https://samuderathai.com/privacy-policy",
+            privacyPolicy: "http://localhost:3000/privacy-policy",
           }),
         }}
       />
@@ -150,7 +150,7 @@ export default function Page() {
             name: "Privacy Policy of Samudera Traffic Co., Ltd. Group",
             description:
               "This Privacy Policy describes how Samudera Traffic Co., Ltd. Group collects, uses, and protects personal information of its customers and website visitors.",
-            url: "https://samuderathai.com/privacy-policy",
+            url: "http://localhost:3000/privacy-policy",
             lastReviewed: "2026-03-10",
             inLanguage: "en-US",
             jurisdiction: "USA",

@@ -19,13 +19,13 @@ export const metadata = {
     "Shipping History",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/history",
+    canonical: "http://localhost:3000/history",
   },
   openGraph: {
     title: "Our History | Samudera Traffic Co., Ltd. Group",
     description:
       "Learn about the history, vision, and mission of Samudera Traffic Co., Ltd. Group. Discover our commitment to providing secure, efficient, and cost-effective logistics solutions worldwide.",
-    url: "https://samuderathai.com/history",
+    url: "http://localhost:3000/history",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Our History",
             description:
               "Learn about the history, vision, and mission of Samudera Traffic Co., Ltd. Group. Discover our commitment to providing secure, efficient, and cost-effective logistics solutions worldwide.",
-            url: "https://samuderathai.com/history",
+            url: "http://localhost:3000/history",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "Organization",
@@ -99,13 +99,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "History",
-                item: "https://samuderathai.com/history",
+                item: "http://localhost:3000/history",
               },
             ],
           }),
@@ -120,8 +120,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com",
-            logo: "https://samuderathai.com/logo.png",
+            url: "http://localhost:3000",
+            logo: "http://localhost:3000/logo.png",
             description: "Leading logistics and supply chain solutions provider",
             foundingDate: "2009",
             founders: [

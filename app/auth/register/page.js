@@ -19,13 +19,13 @@ export const metadata = {
     "Freight Registration",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/auth/register",
+    canonical: "http://localhost:3000/auth/register",
   },
   openGraph: {
     title: "Create Account | Samudera Traffic Co., Ltd. Group",
     description:
       "Join Samudera Traffic Co., Ltd. Group today. Create your customer account to access real-time shipment tracking, global logistics solutions, competitive shipping rates, and 24/7 customer support.",
-    url: "https://samuderathai.com/auth/register",
+    url: "http://localhost:3000/auth/register",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Create Account",
             description:
               "Join Samudera Traffic Co., Ltd. Group today. Create your customer account to access real-time shipment tracking, global logistics solutions, competitive shipping rates, and 24/7 customer support.",
-            url: "https://samuderathai.com/auth/register",
+            url: "http://localhost:3000/auth/register",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +83,7 @@ export default function Page() {
               description: "Create new customer account for logistics services",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://samuderathai.com/auth/register",
+                urlTemplate: "http://localhost:3000/auth/register",
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,19 +103,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Authentication",
-                item: "https://samuderathai.com/auth",
+                item: "http://localhost:3000/auth",
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Create Account",
-                item: "https://samuderathai.com/auth/register",
+                item: "http://localhost:3000/auth/register",
               },
             ],
           }),

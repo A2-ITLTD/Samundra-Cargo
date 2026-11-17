@@ -19,13 +19,13 @@ export const metadata = {
     "Supply Chain Solutions",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/industries",
+    canonical: "http://localhost:3000/industries",
   },
   openGraph: {
     title: "Industries We Serve | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore the industries we serve at Samudera Traffic Co., Ltd. Group. Specialized logistics solutions for eCommerce, manufacturing, retail, automotive, pharmaceuticals, food & beverage, and more.",
-    url: "https://samuderathai.com/industries",
+    url: "http://localhost:3000/industries",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Industries We Serve",
             description:
               "Explore the industries we serve at Samudera Traffic Co., Ltd. Group. Specialized logistics solutions for eCommerce, manufacturing, retail, automotive, pharmaceuticals, food & beverage, and more.",
-            url: "https://samuderathai.com/industries",
+            url: "http://localhost:3000/industries",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "ItemList",
@@ -139,13 +139,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Industries",
-                item: "https://samuderathai.com/industries",
+                item: "http://localhost:3000/industries",
               },
             ],
           }),

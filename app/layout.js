@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://samuderathai.com"),
+  metadataBase: new URL("http://localhost:3000"),
   title: {
     default: "Samudera Traffic Co., Ltd. Group | Global Freight Forwarding & Supply Chain Solutions",
     template: "%s | Samudera Traffic Co., Ltd. Group",

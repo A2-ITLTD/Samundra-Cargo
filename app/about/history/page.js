@@ -19,13 +19,13 @@ export const metadata = {
     "Logistics Achievements",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/history",
+    canonical: "http://localhost:3000/history",
   },
   openGraph: {
     title: "Our History | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore the journey of Samudera Traffic Co., Ltd. Group since 1984. Learn about our foundation, expansion, global reach, milestones, and achievements in the logistics industry.",
-    url: "https://samuderathai.com/history",
+    url: "http://localhost:3000/history",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -59,7 +59,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "https://samuderathai.com/history",
+            url: "http://localhost:3000/history",
             description:
               "Explore the journey of Samudera Traffic Co., Ltd. Group since 1984. Learn about our foundation, expansion, global reach, milestones, and achievements in the logistics industry.",
             foundingDate: "1984",
@@ -74,8 +74,8 @@ export default function Page() {
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
           }),
         }}

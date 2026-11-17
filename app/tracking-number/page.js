@@ -19,13 +19,13 @@ export const metadata = {
     "Delivery Status",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/tracking-number",
+    canonical: "http://localhost:3000/tracking-number",
   },
   openGraph: {
     title: "Track Shipment | Samudera Traffic Co., Ltd. Group",
     description:
       "Track your shipment in real-time with Samudera Traffic Co., Ltd. Group. Enter your tracking number to get live updates on your cargo location, status, and estimated delivery time.",
-    url: "https://samuderathai.com/tracking-number",
+    url: "http://localhost:3000/tracking-number",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +65,12 @@ export default function Page() {
             name: "Track Shipment",
             description:
               "Track your shipment in real-time with Samudera Traffic Co., Ltd. Group. Enter your tracking number to get live updates on your cargo location, status, and estimated delivery time.",
-            url: "https://samuderathai.com/tracking-number",
+            url: "http://localhost:3000/tracking-number",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +83,7 @@ export default function Page() {
               description: "Track your shipment by entering tracking number",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://samuderathai.com/tracking-number",
+                urlTemplate: "http://localhost:3000/tracking-number",
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,13 +103,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Track Shipment",
-                item: "https://samuderathai.com/tracking-number",
+                item: "http://localhost:3000/tracking-number",
               },
             ],
           }),
@@ -138,7 +138,7 @@ export default function Page() {
               name: "Track Shipment",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "https://samuderathai.com/tracking-number/{tracking_number}",
+                urlTemplate: "http://localhost:3000/tracking-number/{tracking_number}",
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },

@@ -20,13 +20,13 @@ export const metadata = {
     "Business Profile",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/profile",
+    canonical: "http://localhost:3000/profile",
   },
   openGraph: {
     title: "My Profile | Samudera Traffic Co., Ltd. Group",
     description:
       "Manage your Samudera Traffic Co., Ltd. Group profile. Update personal information, view business details, manage preferences, and access security settings for your logistics account.",
-    url: "https://samuderathai.com/profile",
+    url: "http://localhost:3000/profile",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +69,12 @@ export default function Page() {
             name: "User Profile",
             description:
               "Manage your Samudera Traffic Co., Ltd. Group profile. Update personal information, view business details, manage preferences, and access security settings.",
-            url: "https://samuderathai.com/profile",
+            url: "http://localhost:3000/profile",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
             mainEntity: {
               "@type": "ProfilePage",
@@ -97,19 +97,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://samuderathai.com",
+                item: "http://localhost:3000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: "https://samuderathai.com/customer/dashboard",
+                item: "http://localhost:3000/customer/dashboard",
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Profile",
-                item: "https://samuderathai.com/profile",
+                item: "http://localhost:3000/profile",
               },
             ],
           }),
@@ -124,7 +124,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Person",
             name: "Samudera Traffic Co., Ltd. Customer",
-            url: "https://samuderathai.com/profile",
+            url: "http://localhost:3000/profile",
             email: "customer@samuderathai.com",
             telephone: "+66977830395",
             worksFor: {

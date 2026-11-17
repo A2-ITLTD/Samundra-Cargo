@@ -18,13 +18,13 @@ export const metadata = {
     "Logistics Partner",
   ],
   alternates: {
-    canonical: "https://samuderathai.com/our-company",
+    canonical: "http://localhost:3000/our-company",
   },
   openGraph: {
     title: "Our Company | Samudera Traffic Co., Ltd. Group",
     description:
       "Discover Samudera Traffic Co., Ltd. Group, our mission, vision, and dedicated team providing logistics, supply chain management, warehousing, and cargo solutions worldwide.",
-    url: "https://samuderathai.com/our-company",
+    url: "http://localhost:3000/our-company",
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -58,14 +58,14 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             name: "Our Company",
-            url: "https://samuderathai.com/our-company",
+            url: "http://localhost:3000/our-company",
             description:
               "Discover Samudera Traffic Co., Ltd. Group, our mission, vision, and dedicated team providing logistics, supply chain management, warehousing, and cargo solutions worldwide.",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "https://samuderathai.com",
-              logo: "https://samuderathai.com/logo.png",
+              url: "http://localhost:3000",
+              logo: "http://localhost:3000/logo.png",
             },
           }),
         }}
