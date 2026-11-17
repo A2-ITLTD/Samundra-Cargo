@@ -2378,7 +2378,7 @@ export default function TrackingPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-4 md:pt-24 sm:pt-0">
+    <div className="bg-gray-50 min-h-screen pt-4 md:pt-24 sm:pt-0 -mt-12 md:-mt-24">
       {/* Hero Section */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-[url('http://localhost:8000/uploads/images/aboutBannerimg.jpeg')] " />
