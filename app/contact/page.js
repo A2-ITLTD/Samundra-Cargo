@@ -1,5 +1,6 @@
 import Contact from "@/components/contact";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Contact Us
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Transportation Solutions",
   ],
   alternates: {
-    canonical: "http://localhost:3000/contact",
+    canonical: siteUrl("/contact"),
   },
   openGraph: {
     title: "Contact Us | Samudera Traffic Co., Ltd. Group",
     description:
       "Get in touch with Samudera Traffic Co., Ltd. Group for all your shipping and logistics needs. Contact our support team for inquiries about sea freight, air freight, trucking, and multimodal shipping solutions.",
-    url: "http://localhost:3000/contact",
+    url: siteUrl("/contact"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Contact Us",
             description:
               "Get in touch with Samudera Traffic Co., Ltd. Group for all your shipping and logistics needs. Contact our support team for inquiries about sea freight, air freight, trucking, and multimodal shipping solutions.",
-            url: "http://localhost:3000/contact",
+            url: siteUrl("/contact"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "Organization",
@@ -133,13 +134,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Contact Us",
-                item: "http://localhost:3000/contact",
+                item: siteUrl("/contact"),
               },
             ],
           }),

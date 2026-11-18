@@ -1,4 +1,5 @@
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 import Company from "@/components/about/company";
 import History from "@/components/about/history";
 import Teams from "@/components/about/Teams";
@@ -18,13 +19,13 @@ export const metadata = {
     "Pricing Table",
   ],
   alternates: {
-    canonical: "http://localhost:3000/about",
+    canonical: siteUrl("/about"),
   },
   openGraph: {
     title: "About Us | Samudera Traffic Co., Ltd. Group",
     description:
       "Learn more about Samudera Traffic Co., Ltd. Group, including our company story, history, team, projects, and pricing information.",
-    url: "http://localhost:3000/about",
+    url: siteUrl("/about"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -67,14 +68,14 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             name: "About Us",
-            url: "http://localhost:3000/about",
+            url: siteUrl("/about"),
             description:
               "Learn more about Samudera Traffic Co., Ltd. Group, including our company story, history, team, projects, and pricing information.",
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}

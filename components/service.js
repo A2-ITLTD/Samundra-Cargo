@@ -1,14 +1,16 @@
 import React from 'react'
+import Link from 'next/link'
 import { HiChevronRight } from 'react-icons/hi'
 import Service from "@/components/home/service"
 import Shipping from "@/components/home/shipping"
+import { uploadsImg } from "@/utils/confiq"
 function service() {
   return (
     <div>
       <div
               className="min-h-[300px] bg-cover bg-center bg-no-repeat relative mx-6"
               style={{
-                backgroundImage: "url('http://localhost:8000/uploads/images/serviceBanner.jpg')",
+                backgroundImage: `url('${uploadsImg('images/serviceBanner.jpg')}')`,
               }}
             >
               <div className="absolute inset-0 bg-black/50"></div>
@@ -19,12 +21,12 @@ function service() {
                 >
                   <ol className="flex items-center space-x-2">
                     <li>
-                      <a
+                      <Link
                         href="/"
                         className="hover:text-primary transition-colors duration-200"
                       >
                         Home
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <HiChevronRight

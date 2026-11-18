@@ -1,6 +1,7 @@
 // components/EcommerceSectors.jsx
 'use client';
 import React, { useState, useEffect } from 'react';
+import { uploadsImg } from '@/utils/confiq';
 
 const EcommerceSectors = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -88,7 +89,7 @@ const EcommerceSectors = () => {
       <div 
         className="absolute inset-0 bg-fixed bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('http://localhost:8000/uploads/images/products.jpg')`,
+          backgroundImage: `url('${uploadsImg('images/products.jpg')}')`,
         }}
       >
         {/* Gradient Overlay */}

@@ -40,6 +40,7 @@ if (typeof window !== 'undefined') {
 // ==================== COMPONENTS ====================
 import { googleLogin } from '@/services/Authentication';
 import { useSiteSettings } from '@/components/context/SiteSettingsProvider';
+import { uploadsImg } from '@/utils/confiq';
 
 const Button = ({
   children,
@@ -483,7 +484,7 @@ export default function LoginPage() {
           <div 
             className="absolute inset-0 z-0"
             style={{
-              backgroundImage: 'url("http://localhost:8000/uploads/images/project (1).jpg")',
+              backgroundImage: `url('${uploadsImg('images/project (1).jpg')}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
@@ -515,7 +516,7 @@ export default function LoginPage() {
               </div>
               <h2 className="text-3xl font-bold text-white">Customer Login</h2>
               <p className="text-gray-200 mt-2">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link href="/auth/register" className="text-[#E67E22] font-semibold hover:underline">
                   Create account
                 </Link>

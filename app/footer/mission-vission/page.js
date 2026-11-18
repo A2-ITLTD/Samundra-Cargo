@@ -1,5 +1,6 @@
 import History from "../../../components/home/history";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Our History
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Shipping History",
   ],
   alternates: {
-    canonical: "http://localhost:3000/history",
+    canonical: siteUrl("/history"),
   },
   openGraph: {
     title: "Our History | Samudera Traffic Co., Ltd. Group",
     description:
       "Learn about the history, vision, and mission of Samudera Traffic Co., Ltd. Group. Discover our commitment to providing secure, efficient, and cost-effective logistics solutions worldwide.",
-    url: "http://localhost:3000/history",
+    url: siteUrl("/history"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Our History",
             description:
               "Learn about the history, vision, and mission of Samudera Traffic Co., Ltd. Group. Discover our commitment to providing secure, efficient, and cost-effective logistics solutions worldwide.",
-            url: "http://localhost:3000/history",
+            url: siteUrl("/history"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "Organization",
@@ -99,13 +100,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "History",
-                item: "http://localhost:3000/history",
+                item: siteUrl("/history"),
               },
             ],
           }),
@@ -120,8 +121,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             foundingDate: "2009",
             founders: [

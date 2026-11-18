@@ -1,5 +1,6 @@
 import RegisterPage from "@/components/auth/register/page";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Registration
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Freight Registration",
   ],
   alternates: {
-    canonical: "http://localhost:3000/auth/register",
+    canonical: siteUrl("/auth/register"),
   },
   openGraph: {
     title: "Create Account | Samudera Traffic Co., Ltd. Group",
     description:
       "Join Samudera Traffic Co., Ltd. Group today. Create your customer account to access real-time shipment tracking, global logistics solutions, competitive shipping rates, and 24/7 customer support.",
-    url: "http://localhost:3000/auth/register",
+    url: siteUrl("/auth/register"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Create Account",
             description:
               "Join Samudera Traffic Co., Ltd. Group today. Create your customer account to access real-time shipment tracking, global logistics solutions, competitive shipping rates, and 24/7 customer support.",
-            url: "http://localhost:3000/auth/register",
+            url: siteUrl("/auth/register"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +84,7 @@ export default function Page() {
               description: "Create new customer account for logistics services",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/auth/register",
+                urlTemplate: siteUrl("/auth/register"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,19 +104,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Authentication",
-                item: "http://localhost:3000/auth",
+                item: siteUrl("/auth"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Create Account",
-                item: "http://localhost:3000/auth/register",
+                item: siteUrl("/auth/register"),
               },
             ],
           }),

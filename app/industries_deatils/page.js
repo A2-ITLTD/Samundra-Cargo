@@ -2,6 +2,7 @@ import IndustriesDeatils from '@/components/industriesDetails/industriesDeatils'
 import TailoredService from '@/components/industriesDetails/TailoredServices';
 import Choose from '@/components/industriesDetails/choose';
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Industries Details
 export const metadata = {
@@ -21,13 +22,13 @@ export const metadata = {
     "Global Transport Network",
   ],
   alternates: {
-    canonical: "http://localhost:3000/industries-details",
+    canonical: siteUrl("/industries-details"),
   },
   openGraph: {
     title: "Industries Details | Samudera Traffic Co., Ltd. Group",
     description:
       "Discover our tailored logistics solutions for various industries. We provide just-in-time delivery, returnable packaging, specialized vehicles, rapid delivery, and advanced technology solutions.",
-    url: "http://localhost:3000/industries-details",
+    url: siteUrl("/industries-details"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -69,12 +70,12 @@ export default function Page() {
             name: "Industries Details",
             description:
               "Discover our tailored logistics solutions for various industries. We provide just-in-time delivery, returnable packaging, specialized vehicles, rapid delivery, and advanced technology solutions for your business needs.",
-            url: "http://localhost:3000/industries-details",
+            url: siteUrl("/industries-details"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ItemList",
@@ -122,19 +123,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Industries",
-                item: "http://localhost:3000/industries",
+                item: siteUrl("/industries"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Industries Details",
-                item: "http://localhost:3000/industries-details",
+                item: siteUrl("/industries-details"),
               },
             ],
           }),
@@ -149,8 +150,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             numberOfEmployees: {
               "@type": "QuantitativeValue",

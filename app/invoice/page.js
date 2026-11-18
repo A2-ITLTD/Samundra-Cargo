@@ -1,5 +1,6 @@
 import MyInvoicesPage from "@/components/profile/invoice";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for My Invoices
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Logistics Payments",
   ],
   alternates: {
-    canonical: "http://localhost:3000/invoices",
+    canonical: siteUrl("/invoices"),
   },
   openGraph: {
     title: "My Invoices | Samudera Traffic Co., Ltd. Group",
     description:
       "View and manage your shipping invoices with Samudera Traffic Co., Ltd. Group. Track invoice status, download PDF copies, view payment history, and manage your logistics billing online.",
-    url: "http://localhost:3000/invoices",
+    url: siteUrl("/invoices"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "My Invoices",
             description:
               "View and manage your shipping invoices with Samudera Traffic Co., Ltd. Group. Track invoice status, download PDF copies, view payment history, and manage your logistics billing online.",
-            url: "http://localhost:3000/invoices",
+            url: siteUrl("/invoices"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ItemList",
@@ -93,19 +94,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Customer Dashboard",
-                item: "http://localhost:3000/customer/dashboard",
+                item: siteUrl("/invoice"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Invoices",
-                item: "http://localhost:3000/invoices",
+                item: siteUrl("/invoices"),
               },
             ],
           }),
@@ -120,8 +121,8 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000",
-            logo: "http://localhost:3000/logo.png",
+            url: siteUrl("/"),
+            logo: siteUrl("/logo.png"),
             description: "Leading logistics and supply chain solutions provider",
             paymentAccepted: ["Credit Card", "Bank Transfer", "Wire Transfer"],
             priceRange: "$$",

@@ -440,21 +440,19 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-y-auto">
+    <div className="fixed inset-0 z-[110] overflow-y-auto">
       <div
         className="fixed inset-0 bg-black/35"
         onClick={onClose}
       />
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-
+      <div className="relative z-10 flex min-h-full items-start justify-center px-4 pt-24 pb-8 sm:pt-28">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className={`relative z-20 inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle ${sizes[size]} w-full`}
+          className={`relative z-20 flex max-h-[calc(100vh-8rem)] w-full flex-col bg-white rounded-2xl text-left overflow-hidden shadow-xl ${sizes[size]}`}
         >
           <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -465,7 +463,7 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
               <X className="h-5 w-5 text-gray-500" />
             </button>
           </div>
-          <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
+          <div className="px-6 py-4 min-h-0 overflow-y-auto">
             {children}
           </div>
         </motion.div>
@@ -479,13 +477,7 @@ const TimelineModal = ({ isOpen, onClose, bookingId }) => {
   const [timeline, setTimeline] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchTimeline();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchTimeline = async () => {
+  const fetchTimeline = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingTimeline(bookingId);
@@ -499,7 +491,11 @@ const TimelineModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchTimeline();
+  }, [isOpen, bookingId, fetchTimeline]);
 
   if (!isOpen) return null;
 
@@ -545,13 +541,7 @@ const InvoiceModal = ({ isOpen, onClose, bookingId }) => {
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchInvoice();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingInvoice(bookingId);
@@ -565,7 +555,11 @@ const InvoiceModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchInvoice();
+  }, [isOpen, bookingId, fetchInvoice]);
 
   const handleDownload = async (documentId) => {
     try {
@@ -646,13 +640,7 @@ const QuoteDetailsModal = ({ isOpen, onClose, bookingId }) => {
   const [quote, setQuote] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && bookingId) {
-      fetchQuote();
-    }
-  }, [isOpen, bookingId]);
-
-  const fetchQuote = async () => {
+  const fetchQuote = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getMyBookingQuote(bookingId);
@@ -666,7 +654,11 @@ const QuoteDetailsModal = ({ isOpen, onClose, bookingId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
+
+  useEffect(() => {
+    if (isOpen && bookingId) fetchQuote();
+  }, [isOpen, bookingId, fetchQuote]);
 
   if (!isOpen) return null;
 
@@ -1244,7 +1236,7 @@ const BookingDetailsModal = ({ isOpen, onClose, booking, onAction }) => {
                           Valid for {daysRemaining} more day{daysRemaining !== 1 ? 's' : ''}
                         </span>
                       ) : (
-                        <span className="text-xs text-red-600">Quote expired or till didn't given a quote yet</span>
+                        <span className="text-xs text-red-600">Quote expired or till didn&apos;t given a quote yet</span>
                       )}
                     </div>
                   </div>
@@ -1587,32 +1579,6 @@ export default function CustomerBookingsPage() {
           pages: Math.max(1, Math.ceil(normalizedBookings.length / filters.limit))
         });
         
-        // Update stats
-        const newStats = {
-          total: normalizedBookings.length,
-          booking_requested: 0,
-          price_quoted: 0,
-          booking_confirmed: 0,
-          in_transit: 0,
-          delivered: 0,
-          cancelled: 0
-        };
-        
-        normalizedBookings.forEach(booking => {
-          const status = booking.displayStatus || booking.status;
-          
-          if (newStats.hasOwnProperty(status)) {
-            newStats[status]++;
-          }
-          if (status === 'in_transit' || 
-              status === 'arrived_at_destination' || 
-              status === 'customs_clearance' || 
-              status === 'out_for_delivery') {
-            newStats.in_transit++;
-          }
-        });
-        
-        setStats(newStats);
       } else {
         setBookings([]);
         setSummary(null);
@@ -1621,15 +1587,6 @@ export default function CustomerBookingsPage() {
           page: 1,
           limit: 10,
           pages: 0
-        });
-        setStats({
-          total: 0,
-          booking_requested: 0,
-          price_quoted: 0,
-          booking_confirmed: 0,
-          in_transit: 0,
-          delivered: 0,
-          cancelled: 0
         });
       }
     } catch (error) {
@@ -1646,6 +1603,16 @@ export default function CustomerBookingsPage() {
       const response = await getMyBookingsSummary();
       if (response.success) {
         setSummary(response.data);
+        const data = response.data || {};
+        setStats({
+          total: data.total || 0,
+          booking_requested: data.requested || 0,
+          price_quoted: data.quoted || 0,
+          booking_confirmed: data.confirmed || 0,
+          in_transit: 0,
+          delivered: data.delivered || 0,
+          cancelled: data.cancelled || 0
+        });
       }
     } catch (error) {
       console.error('Failed to fetch summary:', error);
@@ -1891,9 +1858,13 @@ export default function CustomerBookingsPage() {
                 icon={<FilterIcon className="h-4 w-4" />}
               >
                 Filters
-                {(filters.status || filters.sort !== '-createdAt') && (
+                {(filters.search || filters.status || filters.sort !== '-createdAt') && (
                   <span className="ml-2 bg-white text-[#E67E22] rounded-full px-2 py-0.5 text-xs">
-                    {Object.values(filters).filter(v => v && v !== '' && v !== 10 && v !== '-createdAt').length}
+                    {[
+                      filters.search || null,
+                      filters.status || null,
+                      filters.sort !== '-createdAt' ? filters.sort : null
+                    ].filter(Boolean).length}
                   </span>
                 )}
               </Button>

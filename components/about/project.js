@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
+import { uploadsImg } from "@/utils/confiq";
 
 const tabs = ["All", "Customs", "Freights", "Industries", "Shipments", "Stores"];
 
@@ -11,7 +12,7 @@ const projects = [
   {
     title: "Smart Customs Clearance",
     category: "Customs",
-    image: "http://localhost:8000/uploads/images/project (1).jpg",
+    image: uploadsImg("images/project (1).jpg"),
     description: "AI-powered customs documentation and clearance system with real-time tracking",
     location: "Singapore Hub",
     year: "2024"
@@ -19,7 +20,7 @@ const projects = [
   {
     title: "Global Freight Solutions",
     category: "Freights",
-    image: "http://localhost:8000/uploads/images/project (2).jpg",
+    image: uploadsImg("images/project (2).jpg"),
     description: "End-to-end freight management with predictive analytics",
     location: "Rotterdam Port",
     year: "2024"
@@ -27,7 +28,7 @@ const projects = [
   {
     title: "Express Cargo Handling",
     category: "Industries",
-    image: "http://localhost:8000/uploads/images/project (3).jpg",
+    image: uploadsImg("images/project (3).jpg"),
     description: "Automated cargo sorting and handling system",
     location: "Dubai Airport",
     year: "2023"
@@ -35,7 +36,7 @@ const projects = [
   {
     title: "Industrial Supply Chain Hub",
     category: "Industries",
-    image: "http://localhost:8000/uploads/images/project (4).jpg",
+    image: uploadsImg("images/project (4).jpg"),
     description: "Smart warehouse with IoT integration",
     location: "Shanghai Port",
     year: "2024"
@@ -43,7 +44,7 @@ const projects = [
   {
     title: "Smart Manufacturing Logistics",
     category: "Shipments",
-    image: "http://localhost:8000/uploads/images/project (5).jpg",
+    image: uploadsImg("images/project (5).jpg"),
     description: "Just-in-time delivery optimization system",
     location: "Tokyo Factory",
     year: "2023"
@@ -51,7 +52,7 @@ const projects = [
   {
     title: "Real-Time Shipment Tracking",
     category: "Shipments",
-    image: "http://localhost:8000/uploads/images/project (6).jpg",
+    image: uploadsImg("images/project (6).jpg"),
     description: "Blockchain-based shipment verification",
     location: "Hamburg Terminal",
     year: "2024"
@@ -59,7 +60,7 @@ const projects = [
   {
     title: "Cross-Border Shipping Network",
     category: "Stores",
-    image: "http://localhost:8000/uploads/images/project (7).jpg",
+    image: uploadsImg("images/project (7).jpg"),
     description: "Multi-country shipping consolidation",
     location: "LA Logistics Center",
     year: "2023"
@@ -67,7 +68,7 @@ const projects = [
   {
     title: "Next-Gen Warehousing Facility",
     category: "Freights",
-    image: "http://localhost:8000/uploads/images/project (8).jpg",
+    image: uploadsImg("images/project (8).jpg"),
     description: "Automated storage and retrieval system",
     location: "Amsterdam Hub",
     year: "2024"

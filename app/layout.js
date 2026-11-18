@@ -6,6 +6,7 @@ import Footer from "@/components/common/footer";
 import ClientLayout from "@/components/layout/ClientLayout";
 import { Suspense } from "react";
 import ToastProvider from "@/components/common/ToastProvider";
+import { SITE_URL } from "@/utils/confiq";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Samudera Traffic Co., Ltd. Group | Global Freight Forwarding & Supply Chain Solutions",
     template: "%s | Samudera Traffic Co., Ltd. Group",

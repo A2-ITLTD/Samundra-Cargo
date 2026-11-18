@@ -1,16 +1,17 @@
 "use client";
 import Image from "next/image";
+import { uploadsImg } from "@/utils/confiq";
 
 export default function BlogSection() {
   const blogs = [
     {
-      img: "http://localhost:8000/uploads/images/blog1.jpg",
+      img: uploadsImg("images/blog1.jpg"),
       tag: "INDUSTRY INSIGHTS",
       title: "The Impact of E-commerce on Global Logistics",
       desc: "Exporto and dislike men who are...",
     },
     {
-      img: "http://localhost:8000/uploads/images/blog2.jpg",
+      img: uploadsImg("images/blog2.jpg"),
       tag: "COMPANY NEWS",
       title: "Freight Insurance 101: What You Need to Know",
       desc: "Exporto and dislike men who are...",

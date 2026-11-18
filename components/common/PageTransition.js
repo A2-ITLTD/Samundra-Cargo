@@ -1,20 +1,7 @@
-
 "use client";
 
-import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from 'framer-motion';
+// Keep the persistent site shell mounted while Next.js swaps route content.
+// No forced spinner or animation delay is needed for static App Router pages.
 export default function PageTransition({ children }) {
-  const pathname = usePathname();
-  
-  return (
-    <motion.div
-      key={pathname}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.2 }} // 0.3 থেকে 0.2 করুন
-    >
-      {children}
-    </motion.div>
-  );
+  return <>{children}</>;
 }

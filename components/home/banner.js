@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { uploadsImg } from '@/utils/confiq';
 
 const stats = [
   { value: '25+', label: 'Years of Experience' },
@@ -49,7 +50,7 @@ const Banner = () => {
 
             <div className="lg:col-span-7 relative h-[220px] sm:h-[300px] lg:h-[480px] z-20 hidden md:block">
               <img
-                src="http://localhost:8000/uploads/banner/container1.png"
+                src={uploadsImg('banner/container1.png')}
                 alt="Cargo container"
                 className="w-full h-full object-contain drop-shadow-lg"
               />
@@ -58,7 +59,7 @@ const Banner = () => {
 
           <div className="relative -mt-12 sm:-mt-16 lg:-mt-36 z-0 rounded-xl overflow-hidden shadow-lg">
             <img
-              src="http://localhost:8000/uploads/banner/ship.jpg"
+              src={uploadsImg('banner/ship.jpg')}
               alt="Cargo ship"
               className="w-full h-[200px] sm:h-[360px] lg:h-[400px] object-cover"
             />

@@ -1,5 +1,6 @@
 import CustomerBookingsPage from "@/components/booking/myBooking";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for My Shipments
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Shipment History",
   ],
   alternates: {
-    canonical: "http://localhost:3000/bookings/my_bookings",
+    canonical: siteUrl("/bookings/my_bookings"),
   },
   openGraph: {
     title: "My Shipments | Samudera Traffic Co., Ltd. Group",
     description:
       "Track and manage your shipments with Samudera Traffic Co., Ltd. Group. View booking details, track real-time status, accept/reject quotes, download invoices, and manage your logistics operations.",
-    url: "http://localhost:3000/bookings/my_bookings",
+    url: siteUrl("/bookings/my_bookings"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "My Shipments Dashboard",
             description:
               "Track and manage your shipments with Samudera Traffic Co., Ltd. Group. View booking details, track real-time status, accept/reject quotes, download invoices, and manage your logistics operations.",
-            url: "http://localhost:3000/bookings/my_bookings",
+            url: siteUrl("/bookings/my_bookings"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -83,7 +84,7 @@ export default function Page() {
               description: "View, track, and manage all logistics shipments",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/bookings/my_bookings",
+                urlTemplate: siteUrl("/bookings/my_bookings"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -103,19 +104,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Bookings",
-                item: "http://localhost:3000/bookings",
+                item: siteUrl("/bookings"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "My Shipments",
-                item: "http://localhost:3000/bookings/my_bookings",
+                item: siteUrl("/bookings/my_bookings"),
               },
             ],
           }),

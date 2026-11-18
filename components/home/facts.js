@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { uploadsImg } from '@/utils/confiq';
 import { motion } from 'framer-motion';
 
 const InterestingFacts = () => {
@@ -119,7 +120,7 @@ const InterestingFacts = () => {
     <section ref={sectionRef} className="relative  py-8 sm:py-10 lg:py-12 overflow-hidden">
       {/* Full background image */}
       <div className="absolute inset-0 -z-20">
-        <Image src="http://localhost:8000/uploads/images/on-road_bg.jpg" alt="Background road" fill className="object-cover opacity-80" priority />
+        <Image src={uploadsImg('images/on-road_bg.jpg')} alt="Background road" fill className="object-cover opacity-80" priority />
       </div>
       {/* Dark overlay for contrast */}
       <div className="absolute inset-0 -z-10 bg-black/10" />

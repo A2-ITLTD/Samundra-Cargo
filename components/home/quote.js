@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BASE_URL } from "@/utils/confiq";
 
 export default function RequestQuote() {
   // Form state
@@ -22,8 +23,7 @@ export default function RequestQuote() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+  const API_URL = BASE_URL;
 
   // Dropdown options
   const originOptions = ["China", "Thailand"];
