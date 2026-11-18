@@ -193,59 +193,132 @@ export const updatePriceQuote = async (bookingId, quoteData) => {
 };
 
 // 5. CUSTOMER ACCEPT QUOTE 
+// export const acceptQuote = async (bookingId, notes = '') => {
+//   const key = `acceptQuote:${bookingId}`;
+
+//   return runSingleFlight(key, async () => {
+//   try {
+//     const response = await axiosInstance.put(`/booking/${bookingId}/accept`, { notes });
+    
+//     if (response.data.success) {
+//       return {
+//         success: true,
+//         data: response.data.data,
+//         message: response.data.message
+//       };
+//     }
+    
+//     throw new Error(response.data.message || 'Failed to accept quote');
+    
+//   } catch (error) {
+//     console.error('Accept quote error:', error);
+
+//     const backendMessage = (
+//       error.response?.data?.message ||
+//       error.response?.data?.error ||
+//       ''
+//     ).toLowerCase();
+
+//     const alreadyAccepted = backendMessage.includes('already') && (
+//       backendMessage.includes('accepted') ||
+//       backendMessage.includes('updated') ||
+//       backendMessage.includes('confirmed')
+//     );
+
+//     if (isTimeoutError(error) || alreadyAccepted) {
+//       const recovered = await fetchBookingForRecovery(bookingId);
+//       const isAccepted = recovered?.customerResponse?.status === 'accepted'
+//         || recovered?.pricingStatus === 'accepted'
+//         || recovered?.status === 'booking_confirmed';
+
+//       if (recovered && isAccepted) {
+//         return {
+//           success: true,
+//           data: recovered,
+//           message: 'Quote already accepted (verified after timeout)'
+//         };
+//       }
+//     }
+
+//     return {
+//       success: false,
+//       message: error.response?.data?.error || error.message || 'Failed to accept quote',
+//       error: error.response?.data
+//     };
+//   }
+//   });
+// };
+
+// 5. CUSTOMER ACCEPT QUOTE
+// Controller: exports.acceptQuote
+// Endpoint: PUT /booking/:id/accept
 export const acceptQuote = async (bookingId, notes = '') => {
   const key = `acceptQuote:${bookingId}`;
 
   return runSingleFlight(key, async () => {
-  try {
-    const response = await axiosInstance.put(`/booking/${bookingId}/accept`, { notes });
-    
-    if (response.data.success) {
-      return {
-        success: true,
-        data: response.data.data,
-        message: response.data.message
-      };
-    }
-    
-    throw new Error(response.data.message || 'Failed to accept quote');
-    
-  } catch (error) {
-    console.error('Accept quote error:', error);
+    try {
+      const response = await axiosInstance.put(`/booking/${bookingId}/accept`, { notes });
 
-    const backendMessage = (
-      error.response?.data?.message ||
-      error.response?.data?.error ||
-      ''
-    ).toLowerCase();
-
-    const alreadyAccepted = backendMessage.includes('already') && (
-      backendMessage.includes('accepted') ||
-      backendMessage.includes('updated') ||
-      backendMessage.includes('confirmed')
-    );
-
-    if (isTimeoutError(error) || alreadyAccepted) {
-      const recovered = await fetchBookingForRecovery(bookingId);
-      const isAccepted = recovered?.customerResponse?.status === 'accepted'
-        || recovered?.pricingStatus === 'accepted'
-        || recovered?.status === 'booking_confirmed';
-
-      if (recovered && isAccepted) {
+      if (response.data.success) {
         return {
           success: true,
-          data: recovered,
-          message: 'Quote already accepted (verified after timeout)'
+          data: response.data.data,
+          message: response.data.message
         };
       }
-    }
 
-    return {
-      success: false,
-      message: error.response?.data?.error || error.message || 'Failed to accept quote',
-      error: error.response?.data
-    };
-  }
+      throw new Error(response.data.message || 'Failed to accept quote');
+
+    } catch (error) {
+      console.error('❌ Accept quote error:', error);
+      console.error('❌ 500 BODY:', error.response?.data);
+
+      const rawBackendMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        '';
+
+      const backendMessageLower = (rawBackendMessage || '').toLowerCase();
+
+      const alreadyAccepted =
+        backendMessageLower.includes('already') &&
+        (backendMessageLower.includes('accepted') ||
+          backendMessageLower.includes('updated') ||
+          backendMessageLower.includes('confirmed'));
+
+      // Recover when the server likely succeeded but the client didn't get a
+      // clean response (timeout, or "already accepted" race).
+      if (isTimeoutError(error) || alreadyAccepted) {
+        const recovered = await fetchBookingForRecovery(bookingId);
+        const isAccepted =
+          recovered?.customerResponse?.status === 'accepted' ||
+          recovered?.pricingStatus === 'accepted' ||
+          recovered?.status === 'booking_confirmed';
+
+        if (recovered && isAccepted) {
+          return {
+            success: true,
+            data: recovered,
+            message: 'Quote already accepted (verified after timeout)'
+          };
+        }
+      }
+
+      // Build a user-friendly message from whatever the backend returned.
+      const backendMessageFull =
+        rawBackendMessage ||
+        (Array.isArray(error.response?.data?.errors)
+          ? error.response.data.errors.map((e) => e.msg || e.message).join(', ')
+          : '') ||
+        error.message ||
+        'Failed to accept quote';
+
+      return {
+        success: false,
+        message: backendMessageFull,
+        error: error.response?.data
+      };
+    }
   });
 };
 
