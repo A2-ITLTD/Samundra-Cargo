@@ -448,6 +448,8 @@ const TIMELINE_STATUS_ALIASES = {
   consolidated: "consolidated",
   consolidating: "consolidated",
   inspected: "inspected",
+  damage_reported: "damage_reported",
+  damaged: "damage_reported",
   loaded_into_container: "loaded_into_container",
   loaded_in_container: "loaded_into_container",
   ready_for_dispatch: "ready_for_dispatch",
@@ -502,6 +504,16 @@ const normalizeTimelineStatus = (status) => {
   return TIMELINE_STATUS_ALIASES[lower] || lower;
 };
 
+const formatStatusLabel = (status) => {
+  if (!status) return "N/A";
+  const normalized = normalizeTimelineStatus(status);
+  if (STATUS_CONFIG[normalized]) return STATUS_CONFIG[normalized].label;
+  return normalized
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const parseStageDescription = (description = "") => {
   const result = {};
   const pattern = /([A-Za-z][A-Za-z /]{1,30}):\s*([^,.;]+)/g;
@@ -525,6 +537,7 @@ const JOURNEY_STATUS_ORDER = [
   "pending",
   "received_at_warehouse",
   "inspected",
+  "damage_reported",
   "consolidated",
   "ready_for_dispatch",
   "picked_up_from_warehouse",
@@ -551,6 +564,12 @@ const getJourneyEventRank = (event) => {
     return anchorIndex !== -1
       ? anchorIndex + 0.5
       : JOURNEY_STATUS_ORDER.length;
+  }
+  // A damage report is an exception, not a later delivery stage. Keep it at
+  // the inspection position so a subsequent Good inspection / consolidation
+  // follows it chronologically instead of being hidden behind it.
+  if (status === "damage_reported") {
+    return JOURNEY_STATUS_ORDER.indexOf("inspected");
   }
   const index = JOURNEY_STATUS_ORDER.indexOf(status);
   return index !== -1 ? index : JOURNEY_STATUS_ORDER.length + 1;
@@ -891,7 +910,7 @@ const ContainerDetailsModal = ({ details, onClose }) => {
                 Current Status
               </p>
               <p className="text-sm font-semibold text-red-900">
-                {details.status || "N/A"}
+                {formatStatusLabel(details.status)}
               </p>
             </div>
 
@@ -1094,7 +1113,7 @@ export default function TrackingPage() {
     // from the furthest real stage reached, not the chronologically last event
     // (an update can carry an older timestamp). An active hold still wins.
     const highestStage = processed
-      .filter((event) => !event.isResumeEvent && !event.isHoldEvent && event.mappedStatus)
+      .filter((event) => !event.isResumeEvent && !event.isHoldEvent && event.mappedStatus && event.mappedStatus !== "damage_reported")
       .map((event) => ({ status: event.mappedStatus, rank: getJourneyEventRank(event) }))
       .reduce((best, cur) => (cur.rank > best.rank ? cur : best), { rank: -1, status: null });
     const resolvedStatus =
@@ -1414,38 +1433,46 @@ export default function TrackingPage() {
     const pairs = new Map();
 
     const addContainerEntry = (containerNumber, sealNumber, blNumber) => {
-      if (!containerNumber) return;
-      const key = containerNumber;
-      if (!pairs.has(key)) {
-        pairs.set(key, {
-          containerNumber,
-          sealNumber: sealNumber || "N/A",
-          blNumber: blNumber || "N/A",
-        });
-      }
-      const entry = pairs.get(key);
+      const containerValues = splitDisplayValues(containerNumber);
+      if (containerValues.length === 0) return;
+      const sealValues = splitDisplayValues(sealNumber);
+      const blValues = splitDisplayValues(blNumber);
 
-      if (sealNumber) {
-        entry.sealNumber = sealNumber;
-        sealNumbers.add(sealNumber);
-      }
+      containerValues.forEach((num, index) => {
+        const seal =
+          sealValues.length === containerValues.length
+            ? sealValues[index]
+            : sealValues.join(", ");
+        const bl =
+          blValues.length === containerValues.length
+            ? blValues[index]
+            : blValues.join(", ");
 
-      if (blNumber) {
-        const values = Array.isArray(blNumber) ? blNumber : [blNumber];
-        values.forEach((b) => {
-          if (b) blNumbers.add(b);
-        });
+        if (!pairs.has(num)) {
+          pairs.set(num, {
+            containerNumber: num,
+            sealNumber: seal || "N/A",
+            blNumber: bl || "N/A",
+          });
+        }
+        const entry = pairs.get(num);
 
-        const existingBl =
-          entry.blNumber && entry.blNumber !== "N/A"
-            ? entry.blNumber.split(", ").filter(Boolean)
-            : [];
-        const combinedBl = [
-          ...new Set([...existingBl, ...values.filter(Boolean)]),
-        ].filter(Boolean);
-        entry.blNumber =
-          combinedBl.length > 0 ? combinedBl.join(", ") : entry.blNumber;
-      }
+        if (seal) {
+          entry.sealNumber = seal;
+          sealNumbers.add(seal);
+        }
+
+        if (bl) {
+          blNumbers.add(bl);
+          const existingBl =
+            entry.blNumber && entry.blNumber !== "N/A"
+              ? entry.blNumber.split(", ").filter(Boolean)
+              : [];
+          const combinedBl = [...new Set([...existingBl, bl])].filter(Boolean);
+          entry.blNumber =
+            combinedBl.length > 0 ? combinedBl.join(", ") : entry.blNumber;
+        }
+      });
     };
 
     const collectBl = (value) => {
@@ -1655,15 +1682,24 @@ export default function TrackingPage() {
       .join(" • ");
   };
 
+  const splitDisplayValues = (value) => {
+    if (!value) return [];
+    const values = Array.isArray(value) ? value : [value];
+    return values
+      .flatMap((entry) => String(entry).split(","))
+      .map((entry) => entry.trim())
+      .filter((entry) => entry && entry !== "N/A");
+  };
+
   const getShipmentContainerValue = (kind) => {
     const containers = getShipmentContainers();
-    if (containers.length === 0) return "N/A";
+    const values = [];
 
-    const values = [
-      ...new Set(
-        containers.map((container) => container?.[kind] || "").filter(Boolean),
-      ),
-    ];
+    for (const container of containers) {
+      for (const value of splitDisplayValues(container?.[kind])) {
+        if (!values.includes(value)) values.push(value);
+      }
+    }
 
     return values.length > 0 ? values.join(", ") : "N/A";
   };
@@ -2812,9 +2848,17 @@ export default function TrackingPage() {
                         <p className="text-[11px] text-gray-500 uppercase tracking-wide">
                           BL Number
                         </p>
-                        <p className="text-lg font-semibold text-gray-900 mt-1">
-                          {getShipmentBlValue()}
-                        </p>
+                        {(() => {
+                          const bl = getShipmentBlValue();
+                          return (
+                            <p
+                              className="mt-1 text-xs font-semibold leading-snug text-gray-900 break-words line-clamp-3"
+                              title={bl}
+                            >
+                              {bl}
+                            </p>
+                          );
+                        })()}
                       </div>
                       <div className="rounded-lg border border-gray-200 bg-white p-1.5 md:p-3">
                         <p className="text-[11px] text-gray-500 uppercase tracking-wide">
@@ -3233,12 +3277,18 @@ export default function TrackingPage() {
                                       stageMetadata.containerNumber ||
                                       event.containerNumber ||
                                       null;
-                                    const stageSealNumbers = stageSeal
-                                      ? [...new Set([stageSeal, ...sealArray])]
-                                      : sealArray;
-                                    const stageBlNumbers = stageBl
-                                      ? [...new Set([stageBl, ...blArray])]
-                                      : blArray;
+                                    const stageSealNumbers = [
+                                      ...new Set([
+                                        ...splitDisplayValues(stageSeal),
+                                        ...sealArray,
+                                      ]),
+                                    ];
+                                    const stageBlNumbers = [
+                                      ...new Set([
+                                        ...splitDisplayValues(stageBl),
+                                        ...blArray,
+                                      ]),
+                                    ];
                                     const stageContainerNumber =
                                       stageContainer ||
                                       getShipmentContainerValue("containerNumber");
