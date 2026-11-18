@@ -81,8 +81,8 @@ const SERVICE_TYPES = [
 ];
 
 const ORIGINS = [
-  { value: 'China Warehouse', label: 'China - Main Warehouse' },
-  { value: 'Thailand Warehouse', label: 'Thailand - Regional Hub' }
+  { value: 'China', label: 'China' },
+  { value: 'Thailand', label: 'Thailand' }
 ];
 
 const DESTINATIONS = [
@@ -340,7 +340,7 @@ export default function CreateBooking() {
     },
     
     shipmentDetails: {
-      origin: 'China Warehouse',
+      origin: 'China',
       destination: 'USA',
       shippingMode: 'DDU',
       packageDetails: [{
