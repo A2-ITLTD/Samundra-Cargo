@@ -1,5 +1,6 @@
 import History from "@/components/about/history";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Our History
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Logistics Achievements",
   ],
   alternates: {
-    canonical: "http://localhost:3000/history",
+    canonical: siteUrl("/history"),
   },
   openGraph: {
     title: "Our History | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore the journey of Samudera Traffic Co., Ltd. Group since 1984. Learn about our foundation, expansion, global reach, milestones, and achievements in the logistics industry.",
-    url: "http://localhost:3000/history",
+    url: siteUrl("/history"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -59,7 +60,7 @@ export default function Page() {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Samudera Traffic Co., Ltd. Group",
-            url: "http://localhost:3000/history",
+            url: siteUrl("/history"),
             description:
               "Explore the journey of Samudera Traffic Co., Ltd. Group since 1984. Learn about our foundation, expansion, global reach, milestones, and achievements in the logistics industry.",
             foundingDate: "1984",
@@ -74,8 +75,8 @@ export default function Page() {
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}

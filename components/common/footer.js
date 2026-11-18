@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, ChevronRight, Facebook, Twitter, Linkedin, Instagram, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { useSiteSettings } from '@/components/context/SiteSettingsProvider';
+import { uploadsImg } from '@/utils/confiq';
 
 const Footer = () => {
   const site = useSiteSettings();
@@ -81,12 +82,12 @@ const Footer = () => {
         <div>
           <div className="grid grid-cols-3 gap-1 sm:gap-2">
             {[
-              { id: 1, src: "http://localhost:8000/uploads/images/history (2).jpg", alt: "Gallery 1", path: "http://localhost:8000/uploads/images/history (2).jpg" },
-              { id: 2, src: "http://localhost:8000/uploads/images/history (5).jpg", alt: "Gallery 2", path: "http://localhost:8000/uploads/images/history (5).jpg" },
-              { id: 3, src: "http://localhost:8000/uploads/images/serviceBanner.jpg", alt: "Gallery 3", path: "http://localhost:8000/uploads/images/serviceBanner.jpg" },
-              { id: 4, src: "http://localhost:8000/uploads/images/project (7).jpg", alt: "Gallery 4", path: "http://localhost:8000/uploads/images/project (7).jpg" },
-              { id: 5, src: "http://localhost:8000/uploads/images/service3.jpg", alt: "Gallery 5", path: "http://localhost:8000/uploads/images/service3.jpg" },
-              { id: 6, src: "http://localhost:8000/uploads/images/packaging.jpg", alt: "Gallery 6", path: "http://localhost:8000/uploads/images/packaging.jpg" }
+              { id: 1, src: uploadsImg("images/history (2).jpg"), alt: "Gallery 1", path: uploadsImg("images/history (2).jpg") },
+              { id: 2, src: uploadsImg("images/history (5).jpg"), alt: "Gallery 2", path: uploadsImg("images/history (5).jpg") },
+              { id: 3, src: uploadsImg("images/serviceBanner.jpg"), alt: "Gallery 3", path: uploadsImg("images/serviceBanner.jpg") },
+              { id: 4, src: uploadsImg("images/project (7).jpg"), alt: "Gallery 4", path: uploadsImg("images/project (7).jpg") },
+              { id: 5, src: uploadsImg("images/service3.jpg"), alt: "Gallery 5", path: uploadsImg("images/service3.jpg") },
+              { id: 6, src: uploadsImg("images/packaging.jpg"), alt: "Gallery 6", path: uploadsImg("images/packaging.jpg") }
             ].map((item) => (
               <Link href={item.path} key={item.id}>
                 <motion.div

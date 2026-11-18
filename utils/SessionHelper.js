@@ -108,31 +108,30 @@ export const getUserDetails = () => {
   return null;
 };
 
-// ============ SESSION CLEAR ============
-export const clearAllSessions = () => {
+const clearSessionData = () => {
   if (typeof window !== 'undefined') {
-    Cookies.remove('authToken');
-    Cookies.remove('email');
-    Cookies.remove('otp');
-    Cookies.remove('userDetails');
-    localStorage.clear();
-    window.location.href = "/auth/login";
+    ['authToken', 'token', 'user', 'userDetails', 'email', 'otp'].forEach((name) => {
+      Cookies.remove(name, { path: '/' });
+      Cookies.remove(name, { path: '/auth' });
+      Cookies.remove(name);
+      localStorage.removeItem(name);
+    });
+    ['auth_token', 'user_details'].forEach((name) => localStorage.removeItem(name));
+    window.dispatchEvent(new Event('authChange'));
   }
 };
 
+// ============ SESSION CLEAR ============
+export const clearAllSessions = clearSessionData;
+
 // ============ LOGOUT ============
-export const logout = () => {
-  if (typeof window !== 'undefined') {
-    // Clear both token cookies ('authToken' AND 'token') plus 'user'/'userDetails'
-    // so no stale token survives; localStorage.clear() handles the rest.
-    Cookies.remove('authToken');
-    Cookies.remove('token');
-    Cookies.remove('user');
-    Cookies.remove('userDetails');
-    Cookies.remove('email');
-    Cookies.remove('otp');
-    localStorage.clear();
-    window.location.href = "/auth/login";
+export const logout = clearSessionData;
+
+export const expireSession = () => {
+  const hadToken = Boolean(getAuthToken());
+  clearSessionData();
+  if (hadToken && typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('sessionExpired'));
   }
 };
 

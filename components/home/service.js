@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { uploadsImg } from '@/utils/confiq';
 
 const ServicesSection = () => {
 
@@ -10,7 +11,7 @@ const ServicesSection = () => {
       id: 1,
       title: 'Air Freight',
       description: 'We provide air freight with the competence and service in the sphere of urgent, valuable, time cargo we ensure.',
-      image: 'http://localhost:8000/uploads/images/service2.jpg',
+      image: uploadsImg('images/service2.jpg'),
       features: [
         '100% Satisfaction Guarantee',
         'Highly Professional Staff',
@@ -21,7 +22,7 @@ const ServicesSection = () => {
       id: 2,
       title: 'Ocean Freight',
       description: 'We provide with the best types of basic conditions international sea transportation is implemented by our partners.',
-      image: 'http://localhost:8000/uploads/images/service1.jpg',
+      image: uploadsImg('images/service1.jpg'),
       features: [
         'Accurate Testing Processes',
         'Professional and Qualified',
@@ -32,7 +33,7 @@ const ServicesSection = () => {
       id: 3,
       title: 'Road Freight',
       description: 'We provide a wide range of services including quality international road transportation services including goods & service.',
-      image: 'http://localhost:8000/uploads/images/service3.jpg',
+      image: uploadsImg('images/service3.jpg'),
       features: [
         'Commercial expertise',
         'Logistical expertise',
@@ -43,7 +44,7 @@ const ServicesSection = () => {
       id: 4,
       title: 'Warehousing',
       description: 'We provide with the best types of basic conditions international sea transportation is implemented by our partners.',
-      image: 'http://localhost:8000/uploads/images/project (4).jpg',
+      image: uploadsImg('images/project (4).jpg'),
       features: [
         '100% Satisfaction Guarantee',
         'Highly Professional Staff',
@@ -54,7 +55,7 @@ const ServicesSection = () => {
       id: 5,
       title: 'Supply Chain',
       description: 'We provide with the best types of basic conditions international sea transportation is implemented by our partners.',
-      image: 'http://localhost:8000/uploads/images/supplychain.webp',
+      image: uploadsImg('images/supplychain.webp'),
       features: [
         'Accurate Testing Processes',
         'Professional and Qualified',
@@ -65,7 +66,7 @@ const ServicesSection = () => {
       id: 6,
       title: 'Packaging',
       description: 'We provide with the best types of basic conditions international sea transportation is implemented by our partners.',
-      image: 'http://localhost:8000/uploads/images/packaging.jpg',
+      image: uploadsImg('images/packaging.jpg'),
       features: [
         'Commercial expertise',
         'Logistical expertise',
@@ -157,7 +158,7 @@ const ServicesSection = () => {
         <div className="text-center mb-12">
           <p className="text-red-600 font-semibold text-sm mb-2">Safe & Reliable Cargo Solutions!</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 pt-serif-bold">
-            Managing Logistics For World's
+            Managing Logistics For World&apos;s
           </h2>
           <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 pt-serif-bold">
             Multinational Companies.

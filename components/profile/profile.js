@@ -117,7 +117,7 @@ const ProfilePage = () => {
 
   const handleLogout = () => {
     logout();
-    router.push('/auth/login');
+    router.replace('/auth/login');
     toast.info('Logged out successfully', {
       position: "top-right",
       autoClose: 3000,

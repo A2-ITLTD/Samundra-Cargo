@@ -3,7 +3,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import {
@@ -28,6 +27,7 @@ import {
   customerRejectReturn,
   formatReturnCost
 } from '@/services/shipping';
+import { trackByNumber } from '@/services/booking';
 import { getMyNewShipments } from '@/services/newShipping';
 
 // Icons
@@ -79,43 +79,43 @@ const STATUS_CONFIG = {
     label: 'Picked Up',
     color: 'bg-blue-50 text-blue-700 border-blue-200',
     icon: Truck,
-    progress: 15
+    progress: 45
   },
   inspected: {
     label: 'Inspected',
     color: 'bg-green-50 text-green-700 border-green-200',
     icon: CheckCircle,
-    progress: 22
+    progress: 25
   },
   consolidating: {
     label: 'Consolidating',
     color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
     icon: Layers,
-    progress: 25
+    progress: 30
   },
   consolidated: {
     label: 'Consolidated',
     color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
     icon: Layers,
-    progress: 30
+    progress: 35
   },
   ready_for_dispatch: {
     label: 'Ready for Dispatch',
     color: 'bg-purple-50 text-purple-700 border-purple-200',
     icon: CheckCircle,
-    progress: 35
+    progress: 40
   },
   loaded_in_container: {
     label: 'Loaded in Container',
     color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
     icon: Package,
-    progress: 40
+    progress: 50
   },
   dispatched: {
     label: 'Dispatched',
     color: 'bg-red-100 text-red-700 border-red-200',
     icon: Send,
-    progress: 45
+    progress: 55
   },
   departed_port_of_origin: {
     label: 'Departed Origin Port',
@@ -124,7 +124,7 @@ const STATUS_CONFIG = {
     progress: 50
   },
   in_transit_sea_freight: {
-    label: 'In Transit (Sea)',
+    label: 'In Transit',
     color: 'bg-cyan-50 text-cyan-700 border-cyan-200',
     icon: Ship,
     progress: 55
@@ -191,6 +191,20 @@ const STATUS_CONFIG = {
   },
 };
 
+const SHIPMENT_JOURNEY_STAGES = [
+  { id: 'confirmed', label: 'Booking confirmed', statuses: ['booking_requested', 'price_quoted', 'booking_confirmed', 'pending'], icon: Package },
+  { id: 'warehouse', label: 'Received at warehouse', statuses: ['received_at_warehouse'], icon: MapPin },
+  { id: 'inspection', label: 'Inspection complete', statuses: ['inspected'], icon: CheckCircle },
+  { id: 'consolidation', label: 'Consolidated', statuses: ['consolidating', 'consolidated'], icon: Layers },
+  { id: 'dispatch-ready', label: 'Prepared for dispatch', statuses: ['ready_for_dispatch', 'picked_up_from_warehouse', 'loaded_in_container', 'loaded_into_container', 'container_sealed'], icon: Package },
+  { id: 'departed', label: 'Departed origin', statuses: ['departed_port_of_origin', 'dispatched', 'departed'], icon: Ship },
+  { id: 'in-transit', label: 'In transit', statuses: ['in_transit', 'in_transit_sea_freight', 'in_transit_air_freight'], icon: Truck },
+  { id: 'arrived', label: 'Arrived at destination', statuses: ['arrived', 'arrived_at_destination_port'], icon: Flag },
+  { id: 'customs', label: 'Customs and unloading', statuses: ['under_customs_clearance', 'under_customs_cleared', 'customs_clearance', 'customs_cleared', 'unloaded_from_vessel'], icon: Shield },
+  { id: 'delivery', label: 'Out for delivery', statuses: ['out_for_delivery'], icon: Navigation },
+  { id: 'delivered', label: 'Delivered', statuses: ['delivered', 'completed'], icon: CheckCircleSolid }
+];
+
 // ==================== SHIPMENT MODE CONFIG ====================
 const SHIPMENT_MODE_CONFIG = {
   air_freight: { icon: Plane, label: 'Air Freight', color: COLORS.info },
@@ -209,16 +223,20 @@ const Button = ({
   isLoading, 
   onClick, 
   className = '', 
-  icon: Icon,  // এটি একটি কম্পোনেন্ট হবে, JSX নয়
+  icon: Icon,
+  iconClassName = '',
+  ariaLabel,
+  title,
   disabled 
 }) => {
   const variants = {
-    primary: `bg-[${COLORS.primary}] text-white hover:bg-[#d35400]`,
-    secondary: `bg-[${COLORS.secondary}] text-white hover:bg-[#2c5a8c]`,
-    outline: `border-2 border-[${COLORS.primary}] text-[${COLORS.primary}] hover:bg-[#fef2e6]`,
+    primary: 'bg-amber-700 text-white hover:bg-amber-800',
+    booking: 'bg-red-600 text-white hover:bg-red-600',
+    secondary: 'bg-[#3C719D] text-white hover:bg-[#2c5a8c]',
+    outline: 'border-2 border-[#F91616] text-[#F91616] hover:bg-[#fef2e6]',
     ghost: 'text-gray-600 hover:bg-gray-100',
-    success: `bg-[${COLORS.success}] text-white hover:bg-[#0d9488]`,
-    danger: `bg-[${COLORS.danger}] text-white hover:bg-[#dc2626]`,
+    success: 'bg-[#10b981] text-white hover:bg-[#0d9488]',
+    danger: 'bg-[#ef4444] text-white hover:bg-[#dc2626]',
     light: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
   };
 
@@ -229,13 +247,21 @@ const Button = ({
     lg: 'px-5 py-2.5 text-base'
   };
 
-  // Icon কম্পোনেন্ট চেক করুন
-  const IconComponent = Icon && typeof Icon === 'function' ? Icon : null;
+  const iconClasses = `h-4 w-4 ${iconClassName} ${children ? 'mr-2' : ''}`.trim();
+  const iconNode = Icon
+    ? React.isValidElement(Icon)
+      ? React.cloneElement(Icon, {
+          className: `${Icon.props.className || 'h-4 w-4'} ${iconClassName} ${children ? 'mr-2' : ''}`.trim(),
+        })
+      : React.createElement(Icon, { className: iconClasses })
+    : null;
 
   return (
     <button
       onClick={onClick}
       disabled={disabled || isLoading}
+      aria-label={ariaLabel}
+      title={title}
       className={`rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center ${variants[variant]} ${sizes[size]} ${className} ${disabled || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       {isLoading ? (
@@ -245,7 +271,7 @@ const Button = ({
         </>
       ) : (
         <>
-          {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
+          {iconNode}
           {children}
         </>
       )}
@@ -290,10 +316,10 @@ const Input = ({ type = 'text', label, value, onChange, placeholder, icon: Icon,
 );
 
 // ==================== SELECT COMPONENT ====================
-const Select = ({ label, value, onChange, options, placeholder, icon: Icon, required, error, className = '' }) => (
-  <div className="space-y-1">
+const Select = ({ name, label, value, onChange, options, placeholder, icon: Icon, required, error, className = '' }) => (
+  <div className="space-y-2 rounded-lg border border-slate-300 bg-slate-100 p-3">
     {label && (
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-semibold text-slate-900">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
     )}
@@ -304,13 +330,14 @@ const Select = ({ label, value, onChange, options, placeholder, icon: Icon, requ
         </div>
       )}
       <select
+        name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-3 py-2 text-sm border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[${COLORS.primary}] focus:border-transparent ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
+        className={`w-full min-h-12 bg-white text-slate-900 px-3 py-2 text-sm font-medium border-2 border-slate-400 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${Icon ? 'pl-10' : 'pl-3'} pr-10 ${className}`}
       >
-        <option value="">{placeholder}</option>
+        <option value="" className="bg-white text-slate-900">{placeholder}</option>
         {options.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value} className="bg-white text-slate-900">{option.label}</option>
         ))}
       </select>
       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -392,21 +419,12 @@ const StatCard = ({ title, value, icon: Icon, color, onClick, active }) => (
 // ==================== ACTION MENU ====================
 const ActionMenu = ({ shipment, onAction }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef(null); // button wrapper
+  const menuRef = useRef(null);
   const buttonRef = useRef(null);
-  const portalRef = useRef(null);
-  const [menuRect, setMenuRect] = useState(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const target = event.target;
-      if (
-        (menuRef.current && menuRef.current.contains(target)) ||
-        (buttonRef.current && buttonRef.current.contains(target)) ||
-        (portalRef.current && portalRef.current.contains(target))
-      ) {
-        return;
-      }
+      if (menuRef.current && menuRef.current.contains(event.target)) return;
       setShowMenu(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -419,7 +437,6 @@ const ActionMenu = ({ shipment, onAction }) => {
   const actions = [
     { label: 'View Details', icon: Eye, action: 'view', color: 'text-blue-600' },
     { label: 'Track Shipment', icon: Navigation, action: 'track', color: 'text-green-600' },
-    { label: 'Request Return', icon: Undo2, action: 'return', color: 'text-red-600' },
   ];
 
   if (canReturn && !hasReturnRequest) {
@@ -443,40 +460,48 @@ const ActionMenu = ({ shipment, onAction }) => {
   }
 
   const toggleMenu = () => {
-    if (!showMenu && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setMenuRect(rect);
+    const willOpen = !showMenu;
+    if (willOpen && buttonRef.current) {
+      const container = buttonRef.current.closest('.overflow-auto');
+      if (container) {
+        const buttonRect = buttonRef.current.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const spaceBelow = containerRect.bottom - buttonRect.bottom;
+        const menuHeight = 150;
+        if (spaceBelow < menuHeight) {
+          container.scrollBy({
+            top: menuHeight - spaceBelow + 8,
+            behavior: 'smooth'
+          });
+        }
+      }
     }
-    setShowMenu(v => !v);
+    setShowMenu(willOpen);
   };
 
   return (
     <div className="relative" ref={menuRef}>
-      <button ref={buttonRef} onClick={toggleMenu} className="p-2 hover:bg-gray-100 rounded-lg">
+      <button
+        ref={buttonRef}
+        onClick={toggleMenu}
+        className="p-2 hover:bg-gray-100 rounded-lg"
+      >
         <MoreVertical className="h-4 w-4 text-gray-500" />
       </button>
 
-      {showMenu && menuRect && typeof document !== 'undefined' && createPortal(
-        <div
-          ref={portalRef}
-          style={{
-            position: 'fixed',
-            top: Math.min(menuRect.bottom + 6, window.innerHeight - 40) + 'px',
-            left: Math.max(8, Math.min(menuRect.right - 192, window.innerWidth - 200)) + 'px',
-            width: 192,
-            zIndex: 9999
-          }}
-        >
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 py-1">
-            {actions.map(action => (
-              <button key={action.action} onClick={() => { onAction(action.action, shipment); setShowMenu(false); }} className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center">
-                <action.icon className={`h-4 w-4 mr-3 ${action.color}`} />
-                <span className="text-gray-700">{action.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>,
-        document.body
+      {showMenu && (
+        <div className="absolute right-0 top-full z-50 mt-1 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-1">
+          {actions.map((action, index) => (
+            <button
+              key={`${action.action}-${index}`}
+              onClick={() => { onAction(action.action, shipment); setShowMenu(false); }}
+              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center"
+            >
+              <action.icon className={`h-4 w-4 mr-3 ${action.color}`} />
+              <span className="text-gray-700">{action.label}</span>
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -494,17 +519,17 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
   
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="fixed inset-0 bg-gray-500 opacity-75" onClick={onClose}></div>
-        <div className={`relative bg-white rounded-2xl ${sizes[size]} w-full max-h-[90vh] overflow-y-auto`}>
-          <div className="px-6 py-4 border-b sticky top-0 bg-white flex items-center justify-between">
+    <div className="fixed inset-0 z-[200] overflow-y-auto">
+      <div className="fixed inset-0 bg-gray-500 opacity-75" onClick={onClose}></div>
+      <div className="relative flex min-h-full items-center justify-center p-4">
+        <div className={`relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-2xl bg-white ${sizes[size]}`}>
+          <div className="flex shrink-0 items-center justify-between border-b px-6 py-4">
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
             <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg">
               <X className="h-5 w-5 text-gray-500" />
             </button>
           </div>
-          <div className="px-6 py-4">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">{children}</div>
         </div>
       </div>
     </div>
@@ -1147,7 +1172,7 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
     if (!trackingNo) return;
     setTrackingLoading(true);
     try {
-      const result = await trackShipmentByNumber(trackingNo);
+      const result = await trackByNumber(trackingNo);
       if (result.success) {
         setTrackingData(result.data);
       }
@@ -1210,6 +1235,54 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
   const progress = trackingData?.progress || getShipmentProgress(status);
   const currentStatus = trackingData?.status || status;
   const currentLocation = trackingData?.currentLocation || 'In Transit';
+  const journeyEvents = [...(trackingData?.timeline?.length ? trackingData.timeline : timeline)]
+    .sort((a, b) => new Date(a.timestamp || a.date || a.formattedDate || 0) - new Date(b.timestamp || b.date || b.formattedDate || 0));
+  const getJourneyStageIndex = (eventStatus) => SHIPMENT_JOURNEY_STAGES.findIndex(stage => stage.statuses.includes(String(eventStatus || '').toLowerCase()));
+  const currentJourneyIndex = getJourneyStageIndex(currentStatus);
+  const recordedJourneyIndexes = journeyEvents
+    .map(event => getJourneyStageIndex(event.status))
+    .filter(index => index >= 0);
+  const activeJourneyIndex = Math.max(currentJourneyIndex, ...recordedJourneyIndexes, 0);
+  const isDelivered = ['delivered', 'completed'].includes(String(currentStatus || '').toLowerCase());
+
+  const transport = shipment.transport || trackingData?.transport || {};
+  const transportLegs = shipment.transportLegs || trackingData?.transportLegs || [];
+  const containers = shipment.containers || trackingData?.containers || [];
+  const consolidation = trackingData?.consolidation || shipment.consolidation || {};
+  const firstContainer = containers[0] || {};
+  const transportValues = {
+    carrier: shipment.courier?.company || transport.carrierName || 'Not assigned',
+    vessel:
+      transport.vesselName ||
+      transport.flightNumber ||
+      transportLegs.find(leg => leg?.vesselName)?.vesselName ||
+      consolidation.vesselName ||
+      'N/A',
+    voyage:
+      transport.voyageNumber ||
+      transportLegs.find(leg => leg?.voyageNumber)?.voyageNumber ||
+      consolidation.voyageNumber ||
+      'N/A',
+    container:
+      transport.containerNumber ||
+      trackingData?.containerNumber ||
+      firstContainer.containerNumber ||
+      shipment.containerInfo?.containerNumber ||
+      consolidation.containerNumber ||
+      'N/A',
+    seal:
+      trackingData?.sealNumber ||
+      firstContainer.sealNumber ||
+      shipment.containerInfo?.sealNumber ||
+      consolidation.sealNumber ||
+      'N/A',
+    bl:
+      trackingData?.blNumber ||
+      firstContainer.blNumber ||
+      shipment.containerInfo?.blNumber ||
+      consolidation.blNumber ||
+      'N/A'
+  };
 
   const tabs = [
     { id: 'details', label: 'Details', icon: Package },
@@ -1232,15 +1305,81 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
         </div>
 
         <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Current Status</span>
-            <span className="text-xs text-gray-500">Last updated: {trackingData?.lastUpdate ? formatShipmentDate(trackingData.lastUpdate, 'short') : formatShipmentDate(shipment.updatedAt, 'short')}</span>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Current status</p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <StatusBadge status={currentStatus} size="lg" />
+                <span className="inline-flex items-center text-sm text-slate-600">
+                  <MapPin className="mr-1.5 h-4 w-4 text-slate-400" />{currentLocation}
+                </span>
+              </div>
+            </div>
+            <span className="text-xs text-slate-500">
+              Last updated {trackingData?.lastUpdate ? formatShipmentDate(trackingData.lastUpdate, 'short') : formatShipmentDate(updatedAt || shipment.updatedAt, 'short')}
+            </span>
           </div>
-          <div className="flex items-center space-x-2 mb-3">
-            <MapPin className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-600">{currentLocation}</span>
+
+          <div className="mt-5 border-t border-slate-200 pt-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <h5 className="text-sm font-semibold text-slate-900">Shipment journey</h5>
+                <p className="mt-0.5 text-xs text-slate-500">Progress updates as each stage is recorded</p>
+              </div>
+              <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
+                {isDelivered ? 'Complete' : `${Math.max(0, Math.round(progress))}%`}
+              </span>
+            </div>
+
+            <ol className="max-h-[340px] space-y-0 overflow-y-auto pr-1">
+              {SHIPMENT_JOURNEY_STAGES.map((stage, index) => {
+                const stageEvents = journeyEvents.filter(event => stage.statuses.includes(String(event.status || '').toLowerCase()));
+                const latestStageEvent = stageEvents[stageEvents.length - 1];
+                const isCurrent = index === activeJourneyIndex && !isDelivered;
+                const isComplete = index < activeJourneyIndex || (isDelivered && index <= activeJourneyIndex);
+                const StageIcon = isComplete ? CheckCircleSolid : stage.icon;
+                const stageStatus = latestStageEvent?.status
+                  ? getShipmentStatusDisplayText(latestStageEvent.status) || String(latestStageEvent.status).replace(/_/g, ' ')
+                  : null;
+
+                return (
+                  <li key={stage.id} className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 pb-3 last:pb-0">
+                    {index < SHIPMENT_JOURNEY_STAGES.length - 1 && (
+                      <span className={`absolute bottom-0 left-[15px] top-8 w-px ${isComplete ? 'bg-emerald-300' : 'bg-slate-200'}`} aria-hidden="true" />
+                    )}
+                    <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border ${
+                      isComplete ? 'border-emerald-200 bg-emerald-50 text-emerald-600' :
+                      isCurrent ? 'border-orange-200 bg-orange-50 text-[#F56602] ring-2 ring-orange-100' :
+                      'border-slate-200 bg-white text-slate-400'
+                    }`}>
+                      <StageIcon className="h-4 w-4" />
+                    </span>
+                    <div className={`min-w-0 rounded-lg px-3 py-2 ${isCurrent ? 'bg-orange-50/70' : ''}`}>
+                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-medium ${isComplete || isCurrent ? 'text-slate-900' : 'text-slate-500'}`}>{stage.label}</span>
+                          {isCurrent && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-orange-700">Current</span>}
+                        </div>
+                        {latestStageEvent?.timestamp || latestStageEvent?.date ? (
+                          <time className="text-xs text-slate-500">{formatShipmentDate(latestStageEvent.timestamp || latestStageEvent.date, 'short')}</time>
+                        ) : !isComplete && !isCurrent ? (
+                          <span className="text-xs text-slate-400">Upcoming</span>
+                        ) : null}
+                      </div>
+                      {stageStatus && stageStatus.toLowerCase() !== stage.label.toLowerCase() && (
+                        <p className="mt-0.5 text-xs capitalize text-slate-500">{stageStatus}</p>
+                      )}
+                      {latestStageEvent?.location && (
+                        <p className="mt-1 inline-flex items-center text-xs text-slate-500">
+                          <MapPin className="mr-1 h-3 w-3" />{latestStageEvent.location}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
-          <ProgressBar progress={progress} showLabel />
         </div>
 
         <div className="border-b">
@@ -1340,15 +1479,31 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-gray-500">Carrier</p>
-                    <p className="text-sm font-medium">{shipment.transport?.carrierName || shipment.courier?.company || 'Not assigned'}</p>
+                    <p className="text-sm font-medium">{transportValues.carrier}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Vessel/Flight</p>
-                    <p className="text-sm font-medium">{shipment.transport?.vesselName || shipment.transport?.flightNumber || 'N/A'}</p>
+                    <p className="text-sm font-medium">{transportValues.vessel}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Voyage Number</p>
+                    <p className="text-sm font-medium">{transportValues.voyage}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Container Number</p>
-                    <p className="text-sm font-medium">{shipment.transport?.containerNumber || shipment.containerInfo?.containerNumber || 'N/A'}</p>
+                    <p className="text-sm font-medium">{transportValues.container}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Seal Number</p>
+                    <p className="text-sm font-medium">{transportValues.seal}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">BL Number</p>
+                    <p className="text-sm font-medium">{transportValues.bl}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-gray-500">Current Location</p>
+                    <p className="text-sm font-medium">{currentLocation || 'Not set'}</p>
                   </div>
                 </div>
               </div>
@@ -1374,55 +1529,68 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin" style={{ color: COLORS.primary }} />
                 </div>
-              ) : (trackingData?.timeline?.length > 0 || timeline.length > 0) ? (
-                <div className="relative">
-                  {(trackingData?.timeline || timeline).map((event, index) => (
-                    <div key={index} className="flex items-start space-x-3 mb-4">
-                      <div className="flex-shrink-0">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          event.status === 'delivered' || event.status === 'completed' ? 'bg-green-100' :
-                          event.status === 'arrived_at_destination_port' ? 'bg-teal-100' :
-                          event.status === 'customs_cleared' ? 'bg-emerald-100' :
-                          event.status === 'out_for_delivery' ? 'bg-pink-100' :
-                          event.status === 'in_transit' ? 'bg-cyan-100' :
-                          event.status === 'dispatched' ? 'bg-red-100' :
-                          'bg-gray-100'
-                        }`}>
-                          {event.status === 'delivered' && <CheckCircleSolid className="h-4 w-4 text-green-600" />}
-                          {event.status === 'arrived_at_destination_port' && <Flag className="h-4 w-4 text-teal-600" />}
-                          {event.status === 'customs_cleared' && <Shield className="h-4 w-4 text-emerald-600" />}
-                          {event.status === 'out_for_delivery' && <Truck className="h-4 w-4 text-pink-600" />}
-                          {event.status === 'in_transit' && <Truck className="h-4 w-4 text-cyan-600" />}
-                          {event.status === 'dispatched' && <Send className="h-4 w-4 text-red-600" />}
-                          {(!event.status || event.status === 'pending') && <Clock className="h-4 w-4 text-gray-600" />}
-                        </div>
-                      </div>
-                      <div className="flex-1 bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {event.statusLabel || getShipmentStatusDisplayText(event.status) || event.title || 'Update'}
-                            </p>
-                            {event.description && (
-                              <p className="text-xs text-gray-600 mt-1">{event.description}</p>
-                            )}
-                            {event.location && (
-                              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                {event.location}
-                              </p>
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-400">
-                            {formatShipmentDate(event.timestamp || event.date, 'long')}
-                          </p>
-                        </div>
-                      </div>
+              ) : ((trackingData?.timeline?.length ? trackingData.timeline : timeline).length > 0) ? (
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                  <div className="mb-5 flex items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                      <h5 className="text-sm font-semibold text-slate-900">Shipment journey</h5>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {(trackingData?.timeline?.length ? trackingData.timeline : timeline).length} updates · Oldest to newest
+                      </p>
                     </div>
-                  ))}
+                    {trackingNum && (
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                        {trackingNum}
+                      </span>
+                    )}
+                  </div>
+
+                  <ol className="max-h-[55vh] space-y-0 overflow-y-auto pr-1">
+                    {[...(trackingData?.timeline?.length ? trackingData.timeline : timeline)]
+                      .sort((a, b) => new Date(a.timestamp || a.date || a.formattedDate || 0) - new Date(b.timestamp || b.date || b.formattedDate || 0))
+                      .map((event, index, events) => {
+                        const eventStatus = event.status || event.title || event.type;
+                        const statusConfig = STATUS_CONFIG[eventStatus];
+                        const EventIcon = statusConfig?.icon || Activity;
+                        const eventDate = event.timestamp || event.date || event.formattedDate;
+                        const eventLabel = event.statusLabel || getShipmentStatusDisplayText(event.status) || event.title || 'Shipment update';
+                        const isLatest = index === events.length - 1;
+
+                        return (
+                          <li key={event._id || `${eventStatus}-${eventDate || index}-${index}`} className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3 pb-5 last:pb-0">
+                            {index < events.length - 1 && (
+                              <span className="absolute bottom-0 left-[15px] top-8 w-px bg-slate-200" aria-hidden="true" />
+                            )}
+                            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border ${isLatest ? 'border-orange-200 bg-orange-50 text-[#F56602]' : 'border-slate-200 bg-white text-slate-500'}`}>
+                              <EventIcon className="h-4 w-4" />
+                            </span>
+                            <article className={`min-w-0 rounded-lg border p-3 sm:p-4 ${isLatest ? 'border-orange-200 bg-orange-50/40' : 'border-slate-200 bg-white'}`}>
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                                  <h6 className="text-sm font-semibold text-slate-900">{eventLabel}</h6>
+                                  {isLatest && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-orange-700">Latest</span>}
+                                </div>
+                                <time className="shrink-0 text-xs text-slate-500">
+                                  {eventDate ? formatShipmentDate(eventDate, 'long') : 'Time unavailable'}
+                                </time>
+                              </div>
+                              {event.description && <p className="mt-1.5 text-sm leading-5 text-slate-600">{event.description}</p>}
+                              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                                {event.location && <span className="inline-flex items-center"><MapPin className="mr-1 h-3.5 w-3.5" />{event.location}</span>}
+                                {event.type && <span className="rounded bg-slate-100 px-1.5 py-0.5 capitalize">{String(event.type).replace(/_/g, ' ')}</span>}
+                              </div>
+                            </article>
+                          </li>
+                        );
+                      })}
+                  </ol>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">No timeline events yet</p>
+                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-10 text-center">
+                  <Activity className="mx-auto h-8 w-8 text-slate-400" />
+                  <p className="mt-2 text-sm font-medium text-slate-700">No timeline updates yet</p>
+                  <p className="mt-1 text-xs text-slate-500">Shipment events will appear here as they are recorded.</p>
+                </div>
               )}
             </div>
           )}
@@ -1437,6 +1605,24 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
 };
 
 // ==================== TRACKING MODAL ====================
+const TRACK_STATUS_ALIASES = {
+  arrived: 'arrived_at_destination_port',
+  loaded: 'loaded_in_container',
+  dispatched: 'departed_port_of_origin',
+  departed: 'departed_port_of_origin',
+  customs_clearance: 'customs_cleared',
+  under_customs_cleared: 'under_customs_clearance',
+  consolidated: 'consolidated',
+  in_progress: 'pending'
+};
+
+const normalizeTrackStatus = (status) => {
+  const lower = String(status || '').toLowerCase();
+  return TRACK_STATUS_ALIASES[lower] || lower;
+};
+
+const TRACK_STATUS_SEQUENCE = SHIPMENT_JOURNEY_STAGES.flatMap(stage => stage.statuses);
+
 const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
   const [trackingData, setTrackingData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -1448,7 +1634,7 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
   const fetchTracking = async () => {
     setLoading(true);
     try {
-      const result = await trackShipmentByNumber(trackingNumber);
+      const result = await trackByNumber(trackingNumber);
       if (result.success) setTrackingData(result.data);
       else toast.error(result.message);
     } catch (error) {
@@ -1462,6 +1648,17 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
 
   const progress = trackingData?.progress || 0;
   const currentLocation = trackingData?.currentLocation || 'In Transit';
+  const timelineEvents = [...(trackingData?.timeline || [])]
+    .map(event => ({ ...event, normalizedStatus: normalizeTrackStatus(event.status) }))
+    .sort((a, b) => {
+      const aIndex = TRACK_STATUS_SEQUENCE.indexOf(a.normalizedStatus);
+      const bIndex = TRACK_STATUS_SEQUENCE.indexOf(b.normalizedStatus);
+      return (aIndex < 0 ? 999 : aIndex) - (bIndex < 0 ? 999 : bIndex);
+    })
+    .reverse()
+    .filter((event, index, all) =>
+      all.findIndex(item => item.normalizedStatus === event.normalizedStatus) === index
+    );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Track Shipment" size="md">
@@ -1482,11 +1679,21 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-gray-500">Origin</p>
-                <p className="text-sm font-medium">{trackingData.origin || 'N/A'}</p>
+                <p className="text-sm font-medium">
+                  {trackingData.origin ||
+                    trackingData.shipmentDetails?.origin ||
+                    trackingData.consolidation?.originWarehouse ||
+                    ''}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-gray-500">Destination</p>
-                <p className="text-sm font-medium">{trackingData.destination || 'N/A'}</p>
+                <p className="text-sm font-medium">
+                  {trackingData.destination ||
+                    trackingData.shipmentDetails?.destination ||
+                    trackingData.consolidation?.destinationPort ||
+                    ''}
+                </p>
               </div>
             </div>
           </div>
@@ -1505,32 +1712,30 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
 
           <div>
             <h5 className="text-sm font-medium mb-3">Tracking History</h5>
-            <div className="space-y-3">
-              {trackingData.timeline?.map((event, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${
-                    event.status === 'delivered' ? 'bg-green-100' :
-                    event.status === 'arrived_at_destination_port' ? 'bg-teal-100' :
-                    event.status === 'customs_cleared' ? 'bg-emerald-100' :
-                    event.status === 'out_for_delivery' ? 'bg-pink-100' :
-                    'bg-gray-100'
-                  }`}>
-                    {event.status === 'delivered' && <CheckCircleSolid className="h-3 w-3 text-green-600" />}
-                    {event.status === 'arrived_at_destination_port' && <Flag className="h-3 w-3 text-teal-600" />}
-                    {event.status === 'customs_cleared' && <Shield className="h-3 w-3 text-emerald-600" />}
-                    {event.status === 'out_for_delivery' && <Truck className="h-3 w-3 text-pink-600" />}
-                    {(!event.status || event.status === 'pending') && <Clock className="h-3 w-3 text-gray-600" />}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <p className="text-sm font-medium">{event.statusLabel || getShipmentStatusDisplayText(event.status)}</p>
-                      <p className="text-xs text-gray-400">{formatShipmentDate(event.timestamp, 'short')}</p>
+            <div>
+              {timelineEvents.map((event, index) => {
+                const stage = SHIPMENT_JOURNEY_STAGES.find(item => item.statuses.includes(event.normalizedStatus));
+                const config = STATUS_CONFIG[event.normalizedStatus];
+                const Icon = config?.icon || stage?.icon || Package;
+                const label = config?.label || stage?.label || event.normalizedStatus.replace(/_/g, ' ');
+                const isLast = index === timelineEvents.length - 1;
+                return (
+                  <div key={index} className="relative flex items-start space-x-3 pb-4 last:pb-0">
+                    {!isLast && <div className="absolute left-3 top-6 bottom-0 w-px bg-gray-200" />}
+                    <div className={`relative z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${config?.color || 'bg-gray-100 text-gray-600'}`}>
+                      <Icon className="h-3 w-3" />
                     </div>
-                    {event.location && <p className="text-xs text-gray-500 mt-0.5">{event.location}</p>}
-                    {event.description && <p className="text-xs text-gray-400 mt-0.5">{event.description}</p>}
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <div className="flex justify-between gap-2">
+                        <p className="text-sm font-medium capitalize">{label}</p>
+                        <p className="text-xs text-gray-400 whitespace-nowrap">{formatShipmentDate(event.timestamp, 'short')}</p>
+                      </div>
+                      {event.location && <p className="text-xs text-gray-500 mt-0.5">{event.location}</p>}
+                      {event.description && <p className="text-xs text-gray-400 mt-0.5">{event.description}</p>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1545,6 +1750,10 @@ const TrackingModal = ({ isOpen, onClose, trackingNumber }) => {
 export default function ShipmentsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoadingOtherSource, setIsLoadingOtherSource] = useState(false);
+  const hasLoadedShipments = useRef(false);
+  const shipmentRequestId = useRef(0);
   const [myShipments, setMyShipments] = useState([]);
   const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, pages: 1 });
 
@@ -1552,9 +1761,22 @@ export default function ShipmentsPage() {
     page: 1,
     limit: 10,
     status: '',
+    statusGroup: '',
     search: '',
     sort: '-createdAt'
   });
+
+  const STAT_STATUS_GROUPS = {
+    all: [],
+    active: null,
+    pending: [
+      'pending', 'received_at_warehouse', 'consolidated', 'ready_for_dispatch'
+    ],
+    inTransit: [
+      'in_transit', 'in_transit_sea_freight', 'departed_port_of_origin', 'dispatched'
+    ],
+    delivered: ['delivered', 'completed']
+  };
 
   const [showFilters, setShowFilters] = useState(false);
   const [selectedShipment, setSelectedShipment] = useState(null);
@@ -1574,10 +1796,12 @@ export default function ShipmentsPage() {
     inTransit: 0
   });
 
+  const fetchShipmentsRef = useRef(null);
+
   // Auto-refresh every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchMyShipments();
+      fetchShipmentsRef.current?.();
     }, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -1586,7 +1810,7 @@ export default function ShipmentsPage() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchMyShipments();
+        fetchShipmentsRef.current?.();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -1594,7 +1818,9 @@ export default function ShipmentsPage() {
   }, []);
 
   const fetchMyShipments = async () => {
-    setLoading(true);
+    const requestId = ++shipmentRequestId.current;
+    if (!hasLoadedShipments.current) setLoading(true);
+    setIsLoadingOtherSource(false);
     try {
       const firstParams = {
         page: 1,
@@ -1603,15 +1829,6 @@ export default function ShipmentsPage() {
         search: filters.search,
         sort: filters.sort
       };
-      const firstResponse = await getMyShipments(firstParams);
-      let firstData = [];
-      if (firstResponse.success) {
-        firstData = (firstResponse.data || []).map(shipment => ({
-          ...shipment,
-          _apiSource: 'first'
-        }));
-      }
-
       const secondParams = {
         page: 1,
         limit: 100,
@@ -1620,62 +1837,123 @@ export default function ShipmentsPage() {
         ...(filters.search && { search: filters.search }),
         status: filters.status === 'cancelled' ? 'cancelled' : (filters.status === 'delivered' ? 'delivered' : '')
       };
-      const secondResponse = await getMyNewShipments(secondParams);
+
+      let firstData = [];
       let secondData = [];
-      if (secondResponse.success) {
-        secondData = (secondResponse.data || []).map(shipment => ({
+      let settledRequests = 0;
+
+      const publishAvailableShipments = () => {
+        if (requestId !== shipmentRequestId.current) return;
+        let combined = [...firstData, ...secondData];
+
+        // Card counts must reflect every shipment, never the filtered view.
+        setStats(getShipmentSummary(combined.map(shipment => ({
           ...shipment,
-          _apiSource: 'second'
-        }));
-      }
+          status: shipment.status || shipment.shipmentStatus
+        }))));
 
-      let combined = [...firstData, ...secondData];
+        if (filters.search) {
+          const searchLower = filters.search.toLowerCase();
+          combined = combined.filter(shipment =>
+            (shipment.shipmentNumber || shipment._id || '').toString().toLowerCase().includes(searchLower) ||
+            (shipment.trackingNumber || '').toString().toLowerCase().includes(searchLower)
+          );
+        }
 
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        combined = combined.filter(shipment =>
-          (shipment.shipmentNumber || shipment._id || '').toString().toLowerCase().includes(searchLower) ||
-          (shipment.trackingNumber || '').toString().toLowerCase().includes(searchLower)
-        );
-      }
+        const activeGroup = filters.statusGroup
+          ? STAT_STATUS_GROUPS[filters.statusGroup]
+          : undefined;
+        if (activeGroup === null) {
+          combined = combined.filter(shipment => {
+            const status = shipment.status || shipment.shipmentStatus;
+            return !['delivered', 'completed', 'cancelled'].includes(status);
+          });
+        } else if (Array.isArray(activeGroup) && activeGroup.length) {
+          combined = combined.filter(shipment => {
+            const status = shipment.status || shipment.shipmentStatus;
+            return activeGroup.includes(status);
+          });
+        } else if (filters.status) {
+          combined = combined.filter(shipment => {
+            const status = shipment.status || shipment.shipmentStatus;
+            return status === filters.status;
+          });
+        }
 
-      if (filters.status) {
-        combined = combined.filter(shipment => {
-          const status = shipment.status || shipment.shipmentStatus;
-          return status === filters.status;
+        const sortField = filters.sort.startsWith('-') ? filters.sort.substring(1) : filters.sort;
+        const sortOrder = filters.sort.startsWith('-') ? 'desc' : 'asc';
+        combined.sort((a, b) => {
+          let aVal = a[sortField] || a.createdAt;
+          let bVal = b[sortField] || b.createdAt;
+          if (sortField === 'createdAt') {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+          if (sortOrder === 'asc') return aVal > bVal ? 1 : -1;
+          return aVal < bVal ? 1 : -1;
         });
-      }
 
-      const sortField = filters.sort.startsWith('-') ? filters.sort.substring(1) : filters.sort;
-      const sortOrder = filters.sort.startsWith('-') ? 'desc' : 'asc';
-      combined.sort((a, b) => {
-        let aVal = a[sortField] || a.createdAt;
-        let bVal = b[sortField] || b.createdAt;
-        if (sortField === 'createdAt') {
-          aVal = new Date(aVal);
-          bVal = new Date(bVal);
+        const normalized = combined.map(shipment => ({
+          ...shipment,
+          isManual: Boolean(shipment.isManual || shipment.source === 'manual' || shipment._apiSource === 'second'),
+          status: shipment.status || shipment.shipmentStatus,
+          packages: shipment.packages || shipment.shipmentDetails?.packageDetails || []
+        }));
+
+        setMyShipments(normalized);
+        setPagination({
+          total: normalized.length,
+          page: filters.page,
+          limit: filters.limit,
+          pages: Math.max(1, Math.ceil(normalized.length / filters.limit))
+        });
+
+
+      };
+
+      const markRequestSettled = () => {
+        if (requestId !== shipmentRequestId.current) return;
+        settledRequests += 1;
+        if (settledRequests === 2) {
+          hasLoadedShipments.current = true;
+          setLoading(false);
+          setIsLoadingOtherSource(false);
         }
-        if (sortOrder === 'asc') {
-          return aVal > bVal ? 1 : -1;
-        }
-        return aVal < bVal ? 1 : -1;
-      });
+      };
 
-      const normalized = combined.map(shipment => ({
-        ...shipment,
-        isManual: Boolean(shipment.isManual || shipment.source === 'manual' || shipment._apiSource === 'second'),
-        status: shipment.status || shipment.shipmentStatus,
-        packages: shipment.packages || shipment.shipmentDetails?.packageDetails || []
-      }));
+      const firstRequest = getMyShipments(firstParams)
+        .then((response) => {
+          if (response.success) {
+            firstData = (response.data || []).map(shipment => ({
+              ...shipment,
+              _apiSource: 'first'
+            }));
+            hasLoadedShipments.current = true;
+            setLoading(false);
+            setIsLoadingOtherSource(true);
+            publishAvailableShipments();
+          }
+        })
+        .catch((error) => console.error('Legacy shipment request failed:', error))
+        .finally(markRequestSettled);
 
-      setMyShipments(normalized);
-      setPagination({
-        total: normalized.length,
-        page: filters.page,
-        limit: filters.limit,
-        pages: Math.max(1, Math.ceil(normalized.length / filters.limit))
-      });
-      setStats(getShipmentSummary(normalized));
+      const secondRequest = getMyNewShipments(secondParams)
+        .then((response) => {
+          if (response.success) {
+            secondData = (response.data || []).map(shipment => ({
+              ...shipment,
+              _apiSource: 'second'
+            }));
+            hasLoadedShipments.current = true;
+            setLoading(false);
+            setIsLoadingOtherSource(true);
+            publishAvailableShipments();
+          }
+        })
+        .catch((error) => console.error('New shipment request failed:', error))
+        .finally(markRequestSettled);
+
+      await Promise.all([firstRequest, secondRequest]);
     } catch (error) {
       console.error('Fetch shipments error:', error);
       toast.error('Failed to fetch your shipments');
@@ -1694,14 +1972,23 @@ export default function ShipmentsPage() {
     }
   };
 
+  fetchShipmentsRef.current = fetchMyShipments;
+
   useEffect(() => {
-    fetchMyShipments();
-  }, [filters.page, filters.status, filters.sort]);
+    const delay = filters.search ? 300 : 0;
+    const timer = setTimeout(fetchMyShipments, delay);
+    return () => clearTimeout(timer);
+  }, [filters.page, filters.status, filters.statusGroup, filters.search, filters.sort]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value, page: 1 }));
-    if (name === 'status') setActiveStat(value || 'all');
+    setFilters(prev => ({
+      ...prev,
+      [name]: value,
+      statusGroup: '',
+      page: 1
+    }));
+    if (name === 'status') setActiveStat('all');
   };
 
   const handleSearch = (e) => {
@@ -1714,7 +2001,7 @@ export default function ShipmentsPage() {
   };
 
   const clearFilters = () => {
-    setFilters({ page: 1, limit: 10, status: '', search: '', sort: '-createdAt' });
+    setFilters({ page: 1, limit: 10, status: '', statusGroup: '', search: '', sort: '-createdAt' });
     setActiveStat('all');
     toast.info('Filters cleared');
   };
@@ -1744,16 +2031,22 @@ export default function ShipmentsPage() {
   };
 
   const handleManualRefresh = async () => {
-    await fetchMyShipments();
-    toast.info('Shipments refreshed');
+    setIsRefreshing(true);
+    try {
+      await fetchMyShipments();
+      toast.info('Shipments refreshed');
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const filterByStatus = (statusKey) => {
     setActiveStat(statusKey);
-    setFilters(prev => ({ 
-      ...prev, 
-      status: statusKey === 'all' ? '' : statusKey,
-      page: 1 
+    setFilters(prev => ({
+      ...prev,
+      status: '',
+      statusGroup: statusKey === 'all' ? '' : statusKey,
+      page: 1
     }));
   };
 
@@ -1788,17 +2081,9 @@ export default function ShipmentsPage() {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <Button 
-                variant="light" 
+              <Button variant="booking"
                 size="sm" 
-                onClick={handleManualRefresh}
-                icon={RefreshCw}
-              >
-                Refresh
-              </Button>
-              <Button className='bg-red-600 text-white'
-                size="sm" 
-                onClick={() => router.push('/Bookings/my_bookings')}
+                onClick={() => router.push('/Bookings/create_bookings')}
                 icon={Plus}
               >
                 Create New Booking
@@ -1828,8 +2113,8 @@ export default function ShipmentsPage() {
         {/* Search and Filters */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
           <div className="p-4">
-            <div className="flex items-center space-x-2">
-              <div className="flex-1">
+            <form onSubmit={(event) => event.preventDefault()} className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex-1 min-w-0">
                 <Input
                   type="text"
                   placeholder="Search by shipment number, tracking number..."
@@ -1838,25 +2123,38 @@ export default function ShipmentsPage() {
                   icon={Search}
                 />
               </div>
-              <Button 
-                variant={showFilters ? 'primary' : 'light'} 
+              <Button
+                variant="primary"
                 size="md" 
                 onClick={() => setShowFilters(!showFilters)}
                 icon={FilterIcon}
               >
                 Filters
-                {(filters.status || filters.search) && (
+                {(filters.status || filters.statusGroup || filters.search) && (
                   <span className="ml-2 bg-white text-[#E67E22] rounded-full px-2 py-0.5 text-xs">
-                    {Object.values(filters).filter(v => v && v !== '' && v !== 10 && v !== 1).length}
+                    {[
+                      filters.search?.trim() || null,
+                      filters.status || null,
+                      filters.statusGroup ? 'group' : null
+                    ].filter(Boolean).length}
                   </span>
                 )}
               </Button>
-              {(filters.search || filters.status) && (
+              {(filters.search || filters.status || filters.statusGroup) && (
                 <Button variant="light" size="md" onClick={clearFilters} icon={X}>
                   Clear
                 </Button>
               )}
-            </div>
+              <Button
+                variant="light"
+                size="md"
+                onClick={handleManualRefresh}
+                icon={RefreshCw}
+                iconClassName={isRefreshing ? 'animate-spin' : ''}
+                ariaLabel="Refresh shipments"
+                title="Refresh shipments"
+              />
+            </form>
 
             {showFilters && (
               <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1876,9 +2174,9 @@ export default function ShipmentsPage() {
 
         {/* Shipments Table */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="max-h-[70vh] overflow-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 sticky top-0 z-10">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700" onClick={() => handleSort('shipmentNumber')}>
                     <div className="flex items-center">
@@ -1915,20 +2213,13 @@ export default function ShipmentsPage() {
                         <Package className="h-12 w-12 text-gray-400 mb-3" />
                         <p className="text-sm text-gray-500">No shipments found</p>
                         <p className="text-xs text-gray-400 mt-1">Create a booking to start shipping</p>
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
-                          onClick={() => router.push('/Bookings/my_bookings')}
-                          className="mt-3"
-                          icon={Plus}
-                        >
-                          Create New Booking
-                        </Button>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  myShipments.map((shipment) => {
+                  myShipments
+                    .slice((filters.page - 1) * filters.limit, filters.page * filters.limit)
+                    .map((shipment) => {
                     const totalWeight = calculateTotalWeight(shipment.packages);
                     const progress = getShipmentProgress(shipment.status);
                     const hasReturnRequest = shipment.returnRequest && shipment.returnRequest.status !== 'none';
@@ -2001,8 +2292,9 @@ export default function ShipmentsPage() {
                 )}
               </tbody>
             </table>
+            <div className="h-40" aria-hidden="true" />
           </div>
-          
+
           {/* Pagination */}
           {pagination.pages > 1 && (
             <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">

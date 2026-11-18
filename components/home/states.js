@@ -2,12 +2,13 @@
 'use client';
 
 import { Package, Radar, ShieldCheck, Truck } from 'lucide-react';
+import { uploadsImg } from '@/utils/confiq';
 
 export default function States() {
   return (
     <section className="relative w-full overflow-hidden bg-[#e3ddd7]">
       <img
-        src="http://localhost:8000/uploads/images/orange-container.jpg"
+        src={uploadsImg('images/orange-container.jpg')}
         alt="Cargo container illustration"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none bg-black/10"
       />

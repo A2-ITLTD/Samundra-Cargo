@@ -1,4 +1,5 @@
 import CreateBooking from "@/components/booking/createBooking";
+import { siteUrl } from "@/utils/confiq";
 
 import React from "react";
 
@@ -20,13 +21,13 @@ export const metadata = {
     "Shipment Booking",
   ],
   alternates: {
-    canonical: "http://localhost:3000/create-booking",
+    canonical: siteUrl("/create-booking"),
   },
   openGraph: {
     title: "Create Booking | Samudera Traffic Co., Ltd. Group",
     description:
       "Create a new shipping booking with Samudera Traffic Co., Ltd. Group. Book sea freight, air freight, inland trucking, or multimodal shipping. Get competitive rates with real-time tracking.",
-    url: "http://localhost:3000/create-booking",
+    url: siteUrl("/create-booking"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -66,12 +67,12 @@ export default function Page() {
             name: "Create Shipping Booking",
             description:
               "Create a new shipping booking with Samudera Traffic Co., Ltd. Group. Book sea freight, air freight, inland trucking, or multimodal shipping with competitive rates.",
-            url: "http://localhost:3000/create-booking",
+            url: siteUrl("/create-booking"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",
@@ -84,7 +85,7 @@ export default function Page() {
               description: "Book shipping services including sea freight, air freight, and inland trucking",
               target: {
                 "@type": "EntryPoint",
-                urlTemplate: "http://localhost:3000/create-booking",
+                urlTemplate: siteUrl("/create-booking"),
                 actionPlatform: ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"],
               },
             },
@@ -104,19 +105,19 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Bookings",
-                item: "http://localhost:3000/bookings",
+                item: siteUrl("/bookings"),
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: "Create Booking",
-                item: "http://localhost:3000/create-booking",
+                item: siteUrl("/create-booking"),
               },
             ],
           }),

@@ -13,6 +13,7 @@ import {
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { useSiteSettings } from "@/components/context/SiteSettingsProvider";
+import { BASE_URL, uploadsImg } from "@/utils/confiq";
 
 function Contact() {
   const site = useSiteSettings();
@@ -26,8 +27,7 @@ function Contact() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+  const API_URL = BASE_URL;
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -150,7 +150,7 @@ function Contact() {
       <div
         className="min-h-[300px] bg-cover bg-center bg-no-repeat relative mx-6 rounded-xl overflow-hidden"
         style={{
-          backgroundImage: "url('http://localhost:8000/uploads/images/tracking.png')",
+          backgroundImage: `url('${uploadsImg('images/tracking.png')}')`,
         }}
       >
         <div className="absolute inset-0 bg-black/30"></div>
@@ -394,7 +394,7 @@ function Contact() {
               </label>
               <textarea
                 name="message"
-                rows={window.innerWidth < 640 ? 6 : 8}
+                rows={8}
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Write your message here..."

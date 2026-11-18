@@ -1,5 +1,6 @@
 import ForgotPassword from "@/components/auth/forgot-password/page";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Forgot Password
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Account Access",
   ],
   alternates: {
-    canonical: "http://localhost:3000/auth/forgot-password",
+    canonical: siteUrl("/auth/forgot-password"),
   },
   openGraph: {
     title: "Forgot Password | Samudera Traffic Co., Ltd. Group",
     description:
       "Reset your password for Samudera Traffic Co., Ltd. Group account. Enter your email to receive a verification code and create a new password to regain access to your logistics account.",
-    url: "http://localhost:3000/auth/forgot-password",
+    url: siteUrl("/auth/forgot-password"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Forgot Password",
             description:
               "Reset your password for Samudera Traffic Co., Ltd. Group account. Enter your email to receive a verification code and create a new password to regain access to your logistics account.",
-            url: "http://localhost:3000/auth/forgot-password",
+            url: siteUrl("/auth/forgot-password"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "WebPageElement",

@@ -1,5 +1,6 @@
 import ProjectTabs from "@/components/about/project";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Our Projects
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Cross Border Shipping",
   ],
   alternates: {
-    canonical: "http://localhost:3000/projects",
+    canonical: siteUrl("/projects"),
   },
   openGraph: {
     title: "Our Projects | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore our latest projects in logistics, supply chain management, customs clearance, freight solutions, and smart warehousing. Discover how Samudera Traffic Co., Ltd. Group delivers innovation across industries.",
-    url: "http://localhost:3000/projects",
+    url: siteUrl("/projects"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -68,8 +69,8 @@ export default function Page() {
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
           }),
         }}

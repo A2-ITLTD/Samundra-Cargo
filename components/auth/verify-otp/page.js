@@ -186,14 +186,11 @@ export default function VerifyOTPPage() {
       const response = await verifyOTP(email, otpString);
       
       if (response.success) {
-        toast.success('Email verified successfully! Redirecting to your profile...', {
+        toast.success('Email verified successfully!', {
           position: 'top-right',
           autoClose: 3000,
         });
-        
-        setTimeout(() => {
-          router.push('/profile');
-        }, 3000);
+        router.replace('/profile');
       }
     } catch (error) {
       toast.error(error.message || 'Invalid OTP. Please try again.', {
@@ -285,7 +282,7 @@ export default function VerifyOTPPage() {
                 <span className="text-[#E67E22] block">Email Address</span>
               </h1>
               <p className="text-gray-300 text-base max-w-md mb-4">
-                We've sent a verification code to your email. Please enter it below to complete your registration.
+                We&apos;ve sent a verification code to your email. Please enter it below to complete your registration.
               </p>
 
               {/* Email Info */}
@@ -322,7 +319,7 @@ export default function VerifyOTPPage() {
               {/* Testimonial */}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
                 <p className="text-white text-sm italic">
-                  "The verification process was seamless. I was up and running in minutes!"
+                  &quot;The verification process was seamless. I was up and running in minutes!&quot;
                 </p>
                 <div className="mt-2 flex items-center">
                   <div className="w-8 h-8 bg-[#E67E22] rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -344,7 +341,7 @@ export default function VerifyOTPPage() {
             <div className="text-center mb-4">
               <h2 className="text-2xl font-bold text-[#122652]">Enter Verification Code</h2>
               <p className="text-gray-600 text-sm mt-1">
-                Didn't receive the code?{' '}
+                Didn&apos;t receive the code?{' '}
                 <button
                   onClick={handleResendOTP}
                   disabled={!canResend || resendLoading}
@@ -435,7 +432,7 @@ export default function VerifyOTPPage() {
                   </svg>
                   <div className="text-xs text-blue-800">
                     <p className="font-semibold mb-0.5">Having trouble?</p>
-                    <p>Check spam folder or click "Resend OTP". Code expires in 10 minutes.</p>
+                    <p>Check spam folder or click &quot;Resend OTP&quot;. Code expires in 10 minutes.</p>
                   </div>
                 </div>
               </div>

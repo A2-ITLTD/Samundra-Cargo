@@ -1,5 +1,6 @@
 import Industries from "@/components/industries/industries";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Industries
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Supply Chain Solutions",
   ],
   alternates: {
-    canonical: "http://localhost:3000/industries",
+    canonical: siteUrl("/industries"),
   },
   openGraph: {
     title: "Industries We Serve | Samudera Traffic Co., Ltd. Group",
     description:
       "Explore the industries we serve at Samudera Traffic Co., Ltd. Group. Specialized logistics solutions for eCommerce, manufacturing, retail, automotive, pharmaceuticals, food & beverage, and more.",
-    url: "http://localhost:3000/industries",
+    url: siteUrl("/industries"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {
@@ -65,12 +66,12 @@ export default function Page() {
             name: "Industries We Serve",
             description:
               "Explore the industries we serve at Samudera Traffic Co., Ltd. Group. Specialized logistics solutions for eCommerce, manufacturing, retail, automotive, pharmaceuticals, food & beverage, and more.",
-            url: "http://localhost:3000/industries",
+            url: siteUrl("/industries"),
             publisher: {
               "@type": "Organization",
               name: "Samudera Traffic Co., Ltd. Group",
-              url: "http://localhost:3000",
-              logo: "http://localhost:3000/logo.png",
+              url: siteUrl("/"),
+              logo: siteUrl("/logo.png"),
             },
             mainEntity: {
               "@type": "ItemList",
@@ -139,13 +140,13 @@ export default function Page() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "http://localhost:3000",
+                item: siteUrl("/"),
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Industries",
-                item: "http://localhost:3000/industries",
+                item: siteUrl("/industries"),
               },
             ],
           }),

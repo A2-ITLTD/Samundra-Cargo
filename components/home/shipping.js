@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaArrowDown } from "react-icons/fa";
 import { ArrowBigUp } from "lucide-react";
+import { uploadsImg } from "@/utils/confiq";
 
 const steps = [
   { number: '01', title: 'Request a Quote', desc: 'Tell us what you need and receive a tailored quote quickly.', align: 'top', left: '8%', dotY: 120 },
@@ -32,7 +33,7 @@ export default function ShippingProcess() {
 
       {/* Right side image */}
       <img
-        src="http://localhost:8000/uploads/images/shipping.png"
+        src={uploadsImg("images/shipping.png")}
         className="absolute top-0 right-0 w-[48%] hidden lg:block"
         alt="Shipping"
       />

@@ -1,5 +1,6 @@
 import WhyChooseUs from "@/components/industriesDetails/choose";
 import React from "react";
+import { siteUrl } from "@/utils/confiq";
 
 // 🔹 SEO metadata for Why Choose Us
 export const metadata = {
@@ -19,13 +20,13 @@ export const metadata = {
     "Freight Services",
   ],
   alternates: {
-    canonical: "http://localhost:3000/why-choose-us",
+    canonical: siteUrl("/why-choose-us"),
   },
   openGraph: {
     title: "Why Choose Us | Samudera Traffic Co., Ltd. Group",
     description:
       "Discover why Samudera Traffic Co., Ltd. Group is the right choice for your shipping needs. We offer precision timing, end-to-end visibility, advanced technology, and a reliable global network.",
-    url: "http://localhost:3000/why-choose-us",
+    url: siteUrl("/why-choose-us"),
     siteName: "Samudera Traffic Co., Ltd. Group",
     images: [
       {

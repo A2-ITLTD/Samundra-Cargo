@@ -8,20 +8,21 @@ import {
   Zap, Rocket, Coffee, Fuel, FlaskConical, Building2,
   Users, Globe, TrendingUp
 } from "lucide-react";
+import { uploadsImg } from "@/utils/confiq";
 
 const industries = [
-  { id: 1, name: "Automotive", icon: Car, image: "http://localhost:8000/uploads/images/automotive.jpg", description: "EV components, autonomous systems and smart manufacturing.", stats: { projects: "150+", clients: "45+", growth: "28%" } },
-  { id: 2, name: "Retail", icon: ShoppingBag, image: "http://localhost:8000/uploads/images/retail.jpg", description: "Omnichannel platforms and inventory intelligence.", stats: { projects: "200+", clients: "80+", growth: "35%" } },
-  { id: 3, name: "Manufacturing", icon: Factory, image: "http://localhost:8000/uploads/images/manufacturing.jpg", description: "Industry 4.0, predictive maintenance and optimization.", stats: { projects: "180+", clients: "60+", growth: "42%" } },
-  { id: 4, name: "Healthcare", icon: HeartPulse, image: "http://localhost:8000/uploads/images/healthcare.jpg", description: "Telemedicine, EHR and imaging AI solutions.", stats: { projects: "120+", clients: "35+", growth: "52%" } },
-  { id: 5, name: "Technology", icon: Cpu, image: "http://localhost:8000/uploads/images/technology.jpg", description: "Cloud platforms, IoT and enterprise software.", stats: { projects: "250+", clients: "95+", growth: "45%" } },
-  { id: 6, name: "Consumer Goods", icon: Package, image: "http://localhost:8000/uploads/images/goods.jpg", description: "Supply chain visibility and D2C platforms.", stats: { projects: "140+", clients: "55+", growth: "31%" } },
-  { id: 7, name: "Energy", icon: Zap, image: "http://localhost:8000/uploads/images/energy.jpg", description: "Smart grid and renewable optimization.", stats: { projects: "90+", clients: "25+", growth: "38%" } },
-  { id: 8, name: "Aerospace", icon: Rocket, image: "http://localhost:8000/uploads/images/aerospace.jpg", description: "Flight systems, maintenance and simulation.", stats: { projects: "75+", clients: "20+", growth: "33%" } },
-  { id: 9, name: "Food & Beverage", icon: Coffee, image: "http://localhost:8000/uploads/images/foods.jpg", description: "Traceability and quality-control systems.", stats: { projects: "110+", clients: "40+", growth: "29%" } },
-  { id: 10, name: "Oil & Gas", icon: Fuel, image: "http://localhost:8000/uploads/images/oil gas.jpg", description: "Exploration analytics and pipeline monitoring.", stats: { projects: "85+", clients: "22+", growth: "24%" } },
-  { id: 11, name: "Chemicals", icon: FlaskConical, image: "http://localhost:8000/uploads/images/chemical.jpg", description: "Process optimization and safety compliance.", stats: { projects: "95+", clients: "30+", growth: "27%" } },
-  { id: 12, name: "Building", icon: Building2, image: "http://localhost:8000/uploads/images/building.jpg", description: "Smart building automation and construction tech.", stats: { projects: "130+", clients: "48+", growth: "36%" } },
+  { id: 1, name: "Automotive", icon: Car, image: uploadsImg("images/automotive.jpg"), description: "EV components, autonomous systems and smart manufacturing.", stats: { projects: "150+", clients: "45+", growth: "28%" } },
+  { id: 2, name: "Retail", icon: ShoppingBag, image: uploadsImg("images/retail.jpg"), description: "Omnichannel platforms and inventory intelligence.", stats: { projects: "200+", clients: "80+", growth: "35%" } },
+  { id: 3, name: "Manufacturing", icon: Factory, image: uploadsImg("images/manufacturing.jpg"), description: "Industry 4.0, predictive maintenance and optimization.", stats: { projects: "180+", clients: "60+", growth: "42%" } },
+  { id: 4, name: "Healthcare", icon: HeartPulse, image: uploadsImg("images/healthcare.jpg"), description: "Telemedicine, EHR and imaging AI solutions.", stats: { projects: "120+", clients: "35+", growth: "52%" } },
+  { id: 5, name: "Technology", icon: Cpu, image: uploadsImg("images/technology.jpg"), description: "Cloud platforms, IoT and enterprise software.", stats: { projects: "250+", clients: "95+", growth: "45%" } },
+  { id: 6, name: "Consumer Goods", icon: Package, image: uploadsImg("images/goods.jpg"), description: "Supply chain visibility and D2C platforms.", stats: { projects: "140+", clients: "55+", growth: "31%" } },
+  { id: 7, name: "Energy", icon: Zap, image: uploadsImg("images/energy.jpg"), description: "Smart grid and renewable optimization.", stats: { projects: "90+", clients: "25+", growth: "38%" } },
+  { id: 8, name: "Aerospace", icon: Rocket, image: uploadsImg("images/aerospace.jpg"), description: "Flight systems, maintenance and simulation.", stats: { projects: "75+", clients: "20+", growth: "33%" } },
+  { id: 9, name: "Food & Beverage", icon: Coffee, image: uploadsImg("images/foods.jpg"), description: "Traceability and quality-control systems.", stats: { projects: "110+", clients: "40+", growth: "29%" } },
+  { id: 10, name: "Oil & Gas", icon: Fuel, image: uploadsImg("images/oil gas.jpg"), description: "Exploration analytics and pipeline monitoring.", stats: { projects: "85+", clients: "22+", growth: "24%" } },
+  { id: 11, name: "Chemicals", icon: FlaskConical, image: uploadsImg("images/chemical.jpg"), description: "Process optimization and safety compliance.", stats: { projects: "95+", clients: "30+", growth: "27%" } },
+  { id: 12, name: "Building", icon: Building2, image: uploadsImg("images/building.jpg"), description: "Smart building automation and construction tech.", stats: { projects: "130+", clients: "48+", growth: "36%" } },
 ];
 
 export default function IndustriesSection() {
