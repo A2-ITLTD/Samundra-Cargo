@@ -1579,32 +1579,6 @@ export default function CustomerBookingsPage() {
           pages: Math.max(1, Math.ceil(normalizedBookings.length / filters.limit))
         });
         
-        // Update stats
-        const newStats = {
-          total: normalizedBookings.length,
-          booking_requested: 0,
-          price_quoted: 0,
-          booking_confirmed: 0,
-          in_transit: 0,
-          delivered: 0,
-          cancelled: 0
-        };
-        
-        normalizedBookings.forEach(booking => {
-          const status = booking.displayStatus || booking.status;
-          
-          if (newStats.hasOwnProperty(status)) {
-            newStats[status]++;
-          }
-          if (status === 'in_transit' || 
-              status === 'arrived_at_destination' || 
-              status === 'customs_clearance' || 
-              status === 'out_for_delivery') {
-            newStats.in_transit++;
-          }
-        });
-        
-        setStats(newStats);
       } else {
         setBookings([]);
         setSummary(null);
@@ -1613,15 +1587,6 @@ export default function CustomerBookingsPage() {
           page: 1,
           limit: 10,
           pages: 0
-        });
-        setStats({
-          total: 0,
-          booking_requested: 0,
-          price_quoted: 0,
-          booking_confirmed: 0,
-          in_transit: 0,
-          delivered: 0,
-          cancelled: 0
         });
       }
     } catch (error) {
@@ -1638,6 +1603,16 @@ export default function CustomerBookingsPage() {
       const response = await getMyBookingsSummary();
       if (response.success) {
         setSummary(response.data);
+        const data = response.data || {};
+        setStats({
+          total: data.total || 0,
+          booking_requested: data.requested || 0,
+          price_quoted: data.quoted || 0,
+          booking_confirmed: data.confirmed || 0,
+          in_transit: 0,
+          delivered: data.delivered || 0,
+          cancelled: data.cancelled || 0
+        });
       }
     } catch (error) {
       console.error('Failed to fetch summary:', error);
@@ -1883,9 +1858,13 @@ export default function CustomerBookingsPage() {
                 icon={<FilterIcon className="h-4 w-4" />}
               >
                 Filters
-                {(filters.status || filters.sort !== '-createdAt') && (
+                {(filters.search || filters.status || filters.sort !== '-createdAt') && (
                   <span className="ml-2 bg-white text-[#E67E22] rounded-full px-2 py-0.5 text-xs">
-                    {Object.values(filters).filter(v => v && v !== '' && v !== 10 && v !== '-createdAt').length}
+                    {[
+                      filters.search || null,
+                      filters.status || null,
+                      filters.sort !== '-createdAt' ? filters.sort : null
+                    ].filter(Boolean).length}
                   </span>
                 )}
               </Button>
