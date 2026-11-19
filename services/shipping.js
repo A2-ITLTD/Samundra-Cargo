@@ -284,7 +284,7 @@ export const getMyShipmentById = async (shipmentId) => {
 // 4. GET MY SHIPMENT TIMELINE (Customer)
 export const getMyShipmentTimeline = async (shipmentId) => {
   try {
-    const response = await axiosInstance.get(`/shipments/my-shipments/${shipmentId}/timeline`);
+    const response = await axiosInstance.get(`/my-shipments/${shipmentId}/timeline`);
     
     if (response.data.success) {
       return {

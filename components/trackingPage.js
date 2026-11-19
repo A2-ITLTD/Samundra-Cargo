@@ -109,6 +109,14 @@ const STATUS_CONFIG = {
     order: 3,
     stage: "warehouse",
   },
+  damage_reported: {
+    label: "Damage Reported",
+    color: "bg-red-100 text-red-800",
+    icon: AlertCircle,
+    progress: 25,
+    order: 3,
+    stage: "warehouse",
+  },
   consolidated: {
     label: "Consolidated",
     color: "bg-indigo-100 text-indigo-800",
@@ -1117,7 +1125,7 @@ export default function TrackingPage() {
     // from the furthest real stage reached, not the chronologically last event
     // (an update can carry an older timestamp). An active hold still wins.
     const highestStage = processed
-      .filter((event) => !event.isResumeEvent && !event.isHoldEvent && event.mappedStatus && event.mappedStatus !== "damage_reported")
+      .filter((event) => !event.isResumeEvent && !event.isHoldEvent && event.mappedStatus)
       .map((event) => ({ status: event.mappedStatus, rank: getJourneyEventRank(event) }))
       .reduce((best, cur) => (cur.rank > best.rank ? cur : best), { rank: -1, status: null });
     const resolvedStatus =
