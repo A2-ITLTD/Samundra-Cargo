@@ -268,7 +268,6 @@ export default function RequestQuote() {
                   onChange={handleChange}
                   options={originOptions}
                   error={errors.origin}
-                  icon="🌍"
                   placeholder="Select origin country"
                 />
 
@@ -279,7 +278,6 @@ export default function RequestQuote() {
                   onChange={handleChange}
                   options={destinationOptions}
                   error={errors.destination}
-                  icon="📍"
                   placeholder="Select destination country -mb-1"
                 />
 
@@ -291,7 +289,6 @@ export default function RequestQuote() {
                     onChange={handleChange}
                     options={freightTypeOptions}
                     error={errors.freightType}
-                    icon="🚚"
                     placeholder="Select type"
                   />
                   <Input
@@ -301,15 +298,13 @@ export default function RequestQuote() {
                     value={formData.weight}
                     onChange={handleChange}
                     error={errors.weight}
-                    icon="⚖️"
                     required
                   />
                 </div>
 
                 <div className="mt-1">
                   <label className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                    <span className="text-base">📝</span> Special Instructions
-                    (Optional)
+                    Special Instructions (Optional)
                   </label>
                   <textarea
                     name="instructions"
@@ -340,7 +335,6 @@ export default function RequestQuote() {
                   value={formData.name}
                   onChange={handleChange}
                   error={errors.name}
-                  icon="👤"
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -352,7 +346,6 @@ export default function RequestQuote() {
                     value={formData.email}
                     onChange={handleChange}
                     error={errors.email}
-                    icon="📧"
                   />
                   <Input
                     label="Phone"
@@ -362,7 +355,6 @@ export default function RequestQuote() {
                     value={formData.phone}
                     onChange={handleChange}
                     error={errors.phone}
-                    icon="📞"
                   />
                 </div>
 
@@ -372,7 +364,6 @@ export default function RequestQuote() {
                   placeholder="Company Name (Optional)"
                   value={formData.company}
                   onChange={handleChange}
-                  icon="🏢"
                 />
 
                 <Input
@@ -382,7 +373,6 @@ export default function RequestQuote() {
                   value={formData.address}
                   onChange={handleChange}
                   error={errors.address}
-                  icon="🏠"
                 />
               </div>
             </div>
@@ -523,7 +513,7 @@ function Input({
         htmlFor={name}
         className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2"
       >
-        <span className="text-base">{icon}</span>
+        {icon && <span className="text-base">{icon}</span>}
         <span className="flex items-center gap-1">
           {label}
           {required && <span className="text-red-500">*</span>}
@@ -575,7 +565,7 @@ function Select({
         htmlFor={name}
         className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2"
       >
-        <span className="text-base">{icon}</span> {label}
+        {icon && <span className="text-base">{icon}</span>} {label}
       </label>
       <div className="relative">
         <select

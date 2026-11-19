@@ -554,6 +554,8 @@ const JOURNEY_STATUS_ORDER = [
   "completed",
 ];
 
+const HIDDEN_TRACKING_STATUSES = ["price_quoted", "pending"];
+
 const getJourneyEventRank = (event) => {
   const status =
     event?.mappedStatus ||
@@ -1006,6 +1008,8 @@ export default function TrackingPage() {
       const canonical = normalizeTimelineStatus(
         raw.displayStatus || raw.status?.toLowerCase() || "",
       );
+
+      if (HIDDEN_TRACKING_STATUSES.includes(canonical)) continue;
 
       // (2) Booking — captured once, inserted at the start afterwards.
       if (canonical === "booking") {
@@ -2452,7 +2456,17 @@ export default function TrackingPage() {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     try {
-      const date = new Date(dateString);
+      const raw = String(dateString);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        const [year, month, day] = raw.split("-").map(Number);
+        return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+      const date = new Date(raw);
+      if (Number.isNaN(date.getTime())) return "Invalid Date";
       return date.toLocaleString("en-US", {
         year: "numeric",
         month: "short",
@@ -2468,7 +2482,10 @@ export default function TrackingPage() {
   const formatTimeOnly = (dateString) => {
     if (!dateString) return "";
     try {
-      const date = new Date(dateString);
+      const raw = String(dateString);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return "";
+      const date = new Date(raw);
+      if (Number.isNaN(date.getTime())) return "";
       return date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
@@ -3071,13 +3088,16 @@ export default function TrackingPage() {
                     });
 
                     // Filter to display steps (in chronological order of first occurrence)
+                    const visibleStatusesInOrder = uniqueStatusesInOrder.filter(
+                      (step) => !HIDDEN_TRACKING_STATUSES.includes(step),
+                    );
                     let displaySteps = [];
                     if (isEarlyStage) {
-                      displaySteps = uniqueStatusesInOrder.filter((step) =>
+                      displaySteps = visibleStatusesInOrder.filter((step) =>
                         TIMELINE_STEPS.slice(0, 4).includes(step),
                       );
                     } else {
-                      displaySteps = uniqueStatusesInOrder;
+                      displaySteps = visibleStatusesInOrder;
                     }
 
                     if (displaySteps.length === 0) {
@@ -3132,7 +3152,7 @@ export default function TrackingPage() {
 
                                   <div className="border border-gray-200 rounded-lg p-4 bg-white">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-2 font-semibold">
-                                      Location
+                                      Location/Status
                                     </p>
                                     <p className="text-sm font-semibold text-gray-900">
                                       {stepLocation}
