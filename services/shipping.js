@@ -911,19 +911,48 @@ export const getShipmentStatusColor = (status) => {
 export const getShipmentStatusDisplayText = (status) => {
   const statusTexts = {
     'pending': 'Pending',
+    'booking_requested': 'Booking Requested',
+    'booking_confirmed': 'Booking Confirmed',
     'received_at_warehouse': 'Received at Warehouse',
+    'inspected': 'Inspection Complete',
+    'damage_reported': 'Damage Reported',
     'consolidation_in_progress': 'Consolidation in Progress',
+    'consolidated': 'Consolidated',
+    'ready_for_dispatch': 'Ready for Dispatch',
     'ready_for_shipping': 'Ready for Shipping',
+    'picked_up_from_warehouse': 'Picked Up from Warehouse',
+    'loaded_in_container': 'Loaded in Container',
+    'loaded_into_container': 'Loaded in Container',
+    'container_sealed': 'Container Sealed',
+    'departed_port_of_origin': 'Departed Port of Origin',
     'in_transit': 'In Transit',
+    'in_transit_sea_freight': 'In Transit',
     'arrived_at_destination': 'Arrived at Destination',
+    'arrived_at_destination_port': 'Arrived at Destination Port',
+    'under_customs_clearance': 'Under Customs Clearance',
+    'under_customs_cleared': 'Customs Cleared',
     'customs_clearance': 'Customs Clearance',
+    'customs_cleared': 'Customs Cleared',
+    'unloaded_from_vessel': 'Unloaded from Vessel',
     'out_for_delivery': 'Out for Delivery',
     'delivered': 'Delivered',
+    'completed': 'Completed',
     'cancelled': 'Cancelled',
+    'on_hold': 'On Hold',
+    'returned': 'Returned',
+    'return_requested': 'Return Requested',
+    'return_approved': 'Return Approved',
+    'return_rejected': 'Return Rejected',
+    'return_completed': 'Return Completed',
     'draft': 'Draft'
   };
-  
-  return statusTexts[status] || status;
+
+  if (!status) return 'N/A';
+  if (statusTexts[status]) return statusTexts[status];
+  return String(status)
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 };
 
 // Get mode display text

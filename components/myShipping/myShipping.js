@@ -194,7 +194,7 @@ const STATUS_CONFIG = {
 const SHIPMENT_JOURNEY_STAGES = [
   { id: 'confirmed', label: 'Booking confirmed', statuses: ['booking_requested', 'price_quoted', 'booking_confirmed', 'pending'], icon: Package },
   { id: 'warehouse', label: 'Received at warehouse', statuses: ['received_at_warehouse'], icon: MapPin },
-  { id: 'inspection', label: 'Inspection complete', statuses: ['inspected'], icon: CheckCircle },
+  { id: 'inspection', label: 'Inspection complete', statuses: ['inspected', 'damage_reported'], icon: CheckCircle },
   { id: 'consolidation', label: 'Consolidated', statuses: ['consolidating', 'consolidated'], icon: Layers },
   { id: 'dispatch-ready', label: 'Prepared for dispatch', statuses: ['ready_for_dispatch', 'picked_up_from_warehouse', 'loaded_in_container', 'loaded_into_container', 'container_sealed'], icon: Package },
   { id: 'departed', label: 'Departed origin', statuses: ['departed_port_of_origin', 'dispatched', 'departed'], icon: Ship },
@@ -2250,7 +2250,7 @@ export default function ShipmentsPage() {
                                   'bg-red-100 text-red-700'
                                 }`}>
                                   <Undo2 className="h-2.5 w-2.5 mr-1" />
-                                  Return {shipment.returnRequest.status}
+                                  Return {getReturnStatusText(shipment.returnRequest.status)}
                                 </span>
                               </div>
                             )}
