@@ -582,24 +582,35 @@ export const getMyBookingsSummary = async () => {
 // services/booking.js - trackByNumber ফাংশন
 
 export const trackByNumber = async (trackingNumber, searchType = 'tracking_number') => {
-    try {
-        const timestamp = Date.now();
-        
-    const response = await axiosInstance.get(`/track/${encodeURIComponent(trackingNumber)}?type=${encodeURIComponent(searchType)}&_=${timestamp}`);
-        
-        return response.data;
-    } catch (error) {
-        console.error('Error tracking shipment:', error);
-        // Return a proper error object instead of throwing so the component
-        // can display the server's message in the results area.
-        if (error.response?.data) {
+    const searchTypes = [...new Set([
+        searchType,
+        'tracking_number',
+        'booking_number',
+        'container_number',
+        'bl_number'
+    ])];
+
+    let notFoundMessage = null;
+
+    for (const type of searchTypes) {
+        try {
+            const timestamp = Date.now();
+            const response = await axiosInstance.get(`/track/${encodeURIComponent(trackingNumber)}?type=${encodeURIComponent(type)}&_=${timestamp}`);
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 404) {
+                notFoundMessage = error.response.data?.message || 'No shipment found';
+                continue;
+            }
+            console.error('Error tracking shipment:', error);
             return {
                 success: false,
-                message: error.response.data.message || 'No shipment found',
+                message: error.response?.data?.message || 'Failed to connect to server'
             };
         }
-        return { success: false, message: 'Failed to connect to server' };
     }
+
+    return { success: false, message: notFoundMessage || 'No shipment found' };
 };
 
 // 15. UPDATE DELIVERY STATUS (Admin/Warehouse)
@@ -855,9 +866,22 @@ export const formatAddress = (addressObj) => {
 // Format date
 export const formatDate = (dateString, format = 'medium') => {
   if (!dateString) return 'N/A';
-  
-  const date = new Date(dateString);
-  
+
+  const raw = String(dateString);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+  const date = isDateOnly ? new Date(`${raw}T00:00:00Z`) : new Date(raw);
+
+  if (Number.isNaN(date.getTime())) return 'N/A';
+
+  if (isDateOnly) {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: format === 'short' ? 'short' : 'long',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+
   if (format === 'short') {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',

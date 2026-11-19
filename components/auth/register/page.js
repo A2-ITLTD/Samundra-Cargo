@@ -198,7 +198,7 @@ const handlePhoneChange = (e) => {
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
 
-  const businessTypes = ['Trader', 'Manufacturer', 'Distributor', 'Retailer', 'E-commerce', 'Other'];
+  const businessTypes = ['Manufacturer', 'Trader', 'Wholesaler', 'Distributor', 'Retailer', 'Importer', 'Exporter', 'E-commerce', 'Other'];
   const industries = [
     'Textile and Apparel', 
     'Electronics', 
