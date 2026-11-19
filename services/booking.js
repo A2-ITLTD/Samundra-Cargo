@@ -737,10 +737,21 @@ export const getStatusDisplayText = (status) => {
     'booking_confirmed': 'Booking Confirmed',
     'cancelled': 'Cancelled',
     'rejected': 'Rejected',
-    'delivered': 'Delivered'
+    'delivered': 'Delivered',
+    'pending': 'Pending',
+    'quoted': 'Quoted',
+    'accepted': 'Accepted',
+    'expired': 'Expired',
+    'damage_reported': 'Damage Reported',
+    'inspected': 'Inspection Complete'
   };
-  
-  return statusTexts[status] || status;
+
+  if (!status) return 'N/A';
+  if (statusTexts[status]) return statusTexts[status];
+  return String(status)
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 };
 
 // Get pricing status display text
