@@ -456,7 +456,10 @@ const TIMELINE_STATUS_ALIASES = {
   consolidated: "consolidated",
   consolidating: "consolidated",
   inspected: "inspected",
+  inspection_complete: "inspected",
   damage_reported: "damage_reported",
+  damaged_report: "damage_reported",
+  damage_report: "damage_reported",
   damaged: "damage_reported",
   loaded_into_container: "loaded_into_container",
   loaded_in_container: "loaded_into_container",
@@ -1121,9 +1124,8 @@ export default function TrackingPage() {
       return rankDiff !== 0 ? rankDiff : eventTime(a) - eventTime(b);
     });
 
-    // (5) Current status must agree with the journey-sorted timeline. Derive it
-    // from the furthest real stage reached, not the chronologically last event
-    // (an update can carry an older timestamp). An active hold still wins.
+    // (5) The backend shipment status is authoritative; timeline timestamps can
+    // be back-dated, so deriving status from them makes the badge go stale.
     const highestStage = processed
       .filter((event) => !event.isResumeEvent && !event.isHoldEvent && event.mappedStatus)
       .map((event) => ({ status: event.mappedStatus, rank: getJourneyEventRank(event) }))
@@ -1131,7 +1133,7 @@ export default function TrackingPage() {
     const resolvedStatus =
       currentStatus === 'on_hold'
         ? 'on_hold'
-        : (highestStage.status || currentStatus || data.status);
+        : (normalizeTimelineStatus(data.status) || highestStage.status || currentStatus);
 
     return {
       ...data,
