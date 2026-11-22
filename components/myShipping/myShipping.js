@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { toast } from 'react-toastify';
 import {
   getMyShipments,
@@ -1594,6 +1595,44 @@ const ShipmentDetailsModal = ({ isOpen, onClose, shipment, source = 'first' }) =
               )}
             </div>
           )}
+
+          {trackingData?.damage?.photos?.length > 0 && (
+            <div className="rounded-xl border border-red-200 bg-red-50/60 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+                <div>
+                  <h5 className="text-sm font-semibold text-red-800">Damaged Products</h5>
+                  <p className="text-xs text-red-600">
+                    {trackingData.damage.condition}
+                    {trackingData.damage.reportNumber ? ` · ${trackingData.damage.reportNumber}` : ''}
+                  </p>
+                </div>
+              </div>
+              {trackingData.damage.findings && (
+                <p className="mb-3 text-sm text-red-700">{trackingData.damage.findings}</p>
+              )}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {trackingData.damage.photos.map((url, index) => (
+                  <a
+                    key={`${url}-${index}`}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block overflow-hidden rounded-lg border border-red-200 bg-white"
+                  >
+                    <Image
+                      src={url}
+                      alt={`Damage photo ${index + 1}`}
+                      width={240}
+                      height={160}
+                      unoptimized
+                      className="h-32 w-full object-cover"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end pt-4">
@@ -1797,12 +1836,13 @@ export default function ShipmentsPage() {
   });
 
   const fetchShipmentsRef = useRef(null);
+  const isFetchingShipments = useRef(false);
 
-  // Auto-refresh every 30 seconds
+  // Auto-refresh every 60 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       fetchShipmentsRef.current?.();
-    }, 30000);
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -1818,6 +1858,9 @@ export default function ShipmentsPage() {
   }, []);
 
   const fetchMyShipments = async () => {
+    if (isFetchingShipments.current) return;
+    isFetchingShipments.current = true;
+
     const requestId = ++shipmentRequestId.current;
     if (!hasLoadedShipments.current) setLoading(true);
     setIsLoadingOtherSource(false);
@@ -1956,18 +1999,9 @@ export default function ShipmentsPage() {
       await Promise.all([firstRequest, secondRequest]);
     } catch (error) {
       console.error('Fetch shipments error:', error);
-      toast.error('Failed to fetch your shipments');
-      setMyShipments([]);
-      setPagination({ total: 0, page: 1, limit: 10, pages: 0 });
-      setStats({
-        total: 0,
-        active: 0,
-        delivered: 0,
-        cancelled: 0,
-        pending: 0,
-        inTransit: 0
-      });
+      toast.error('Failed to refresh your shipments');
     } finally {
+      isFetchingShipments.current = false;
       setLoading(false);
     }
   };
@@ -2276,11 +2310,8 @@ export default function ShipmentsPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex flex-col space-y-1">
+                          <div className="flex flex-col items-start space-y-1">
                             <StatusBadge status={shipment.status} size="sm" />
-                            <div className="w-24">
-                              <ProgressBar progress={progress} />
-                            </div>
                           </div>
                         </td>
                         <td className="px-4 py-3">

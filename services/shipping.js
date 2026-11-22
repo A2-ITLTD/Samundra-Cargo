@@ -284,7 +284,7 @@ export const getMyShipmentById = async (shipmentId) => {
 // 4. GET MY SHIPMENT TIMELINE (Customer)
 export const getMyShipmentTimeline = async (shipmentId) => {
   try {
-    const response = await axiosInstance.get(`/shipments/my-shipments/${shipmentId}/timeline`);
+    const response = await axiosInstance.get(`/my-shipments/${shipmentId}/timeline`);
     
     if (response.data.success) {
       return {
@@ -1015,9 +1015,22 @@ export const isShipmentActive = (status) => {
 // Format date
 export const formatShipmentDate = (dateString, format = 'medium') => {
   if (!dateString) return 'N/A';
-  
-  const date = new Date(dateString);
-  
+
+  const raw = String(dateString);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+  const date = isDateOnly ? new Date(`${raw}T00:00:00Z`) : new Date(raw);
+
+  if (Number.isNaN(date.getTime())) return 'N/A';
+
+  if (isDateOnly) {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: format === 'short' ? 'short' : 'long',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+
   if (format === 'short') {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
