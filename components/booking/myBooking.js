@@ -1702,6 +1702,12 @@ export default function CustomerBookingsPage() {
       const result = await acceptQuote(bookingId, notes);
       if (result.success) {
         toast.success('Quote accepted successfully!');
+        if (result.warning || !result.data?.shipment) {
+          toast.error(
+            result.warning || 'A shipment was not created for this booking. Please contact support.',
+            { autoClose: false }
+          );
+        }
         fetchBookings();
         fetchSummary();
       } else {
